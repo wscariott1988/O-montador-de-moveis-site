@@ -1,14 +1,12 @@
 export const SITE = {
-  brand: "Willian | Montador de Móveis",
-  name: "Willian Montador de Móveis",
+  brand: "Willian | O Montador de Móveis",
+  name: "Willian O Montador de Móveis",
   url: "https://omontadordemoveis.com",
   phoneDisplay: "(51) 98016-8744",
   whatsappNumber: "5551980168744",
   region: "Novo Hamburgo e Vale dos Sinos",
   ga4: "G-H0R3NGYK8H",
   gtm: "GTM-WV6RLBVN",
-  razaoSocial: "William Souza de Morais",
-  cnpj: "43.090.684/0001-72",
 };
 
 export const WHATSAPP_DEFAULT_MESSAGE =
