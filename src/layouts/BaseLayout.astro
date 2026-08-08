@@ -1,6 +1,14 @@
 ---
 import "../styles/global.css";
-import { CITIES, SITE } from "../data/site";
+import {
+  CITIES,
+  GOOGLE_REVIEWS_URL,
+  SITE,
+  absoluteUrl,
+  googleSiteVerification,
+  isStaging,
+  siteUrl,
+} from "../data/site";
 
 interface Props {
   title?: string;
@@ -11,10 +19,12 @@ interface Props {
 
 const {
   title = "Montador de Móveis em Novo Hamburgo e Vale dos Sinos | Willian",
-  description = "Montagem de móveis em Novo Hamburgo e Vale dos Sinos. Willian trabalha profissionalmente com montagem desde 2020 e já realizou mais de 5.000 montagens. Peça seu orçamento pelo WhatsApp.",
-  canonical = SITE.url,
-  ogImage = `${SITE.url}/images/fotos/willian-foto.webp`,
+  description = "Montagem de móveis em Novo Hamburgo e Vale dos Sinos. Willian trabalha desde 2020 e já montou mais de 5.000 móveis. Orçamento pelo WhatsApp.",
+  canonical = siteUrl,
+  ogImage = absoluteUrl("/images/og/og-image.jpg"),
 } = Astro.props;
+
+const robots = isStaging ? "noindex, nofollow" : "index, follow";
 
 const gtagInit = `
   window.dataLayer = window.dataLayer || [];
@@ -32,28 +42,62 @@ const gtmInit = `
   })(window, document, 'script', 'dataLayer', '${SITE.gtm}');
 `;
 
+// Fallback complementar APENAS para o alias *.vercel.app de um build de produção.
+// Não decide a indexação do domínio oficial (isso é responsabilidade do VERCEL_ENV)
+// e não altera o canonical em runtime.
+const stagingFallback = `
+  (function () {
+    var host = window.location.hostname || '';
+    if (host.indexOf('vercel.app') !== -1 && !document.querySelector('meta[name="robots"]')) {
+      var m = document.createElement('meta');
+      m.name = 'robots';
+      m.content = 'noindex, nofollow';
+      document.head.appendChild(m);
+    }
+  })();
+`;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Person",
-      "@id": `${SITE.url}/#willian`,
-      name: "Willian",
-      jobTitle: "Montador de Móveis",
-      url: SITE.url,
-      image: ogImage,
-      worksFor: { "@id": `${SITE.url}/#business` },
+      "@type": "WebSite",
+      "@id": absoluteUrl("#website"),
+      name: SITE.brand,
+      url: siteUrl,
+      inLanguage: "pt-BR",
     },
     {
-      "@type": "LocalBusiness",
-      "@id": `${SITE.url}/#business`,
+      "@type": "Person",
+      "@id": absoluteUrl("#willian"),
+      name: "Willian Scariott de Souza",
+      jobTitle: "Montador de Móveis",
+      url: siteUrl,
+      image: absoluteUrl("/images/fotos/willian-foto.webp"),
+      worksFor: { "@id": absoluteUrl("#business") },
+    },
+    {
+      "@type": "Organization",
+      "@id": absoluteUrl("#business"),
       name: SITE.brand,
-      description,
-      url: SITE.url,
-      telephone: `+${SITE.whatsappNumber}`,
+      url: siteUrl,
+      logo: absoluteUrl("/images/marcas/logo-willian.webp"),
       image: ogImage,
+      telephone: `+${SITE.whatsappNumber}`,
+      description:
+        "Serviços profissionais de montagem de móveis em Novo Hamburgo e no Vale dos Sinos.",
+      founder: { "@id": absoluteUrl("#willian") },
+      sameAs: [GOOGLE_REVIEWS_URL],
+    },
+    {
+      "@type": "Service",
+      "@id": absoluteUrl("#servico-montagem"),
+      name: "Montagem de Móveis",
+      serviceType: "Montagem e desmontagem de móveis",
+      provider: { "@id": absoluteUrl("#business") },
       areaServed: CITIES,
-      founder: { "@id": `${SITE.url}/#willian` },
+      description:
+        "Montagem, desmontagem, reparos e regulagens de móveis convencionais e planejados, realizados com profissionalismo em Novo Hamburgo e no Vale dos Sinos.",
     },
   ],
 };
@@ -66,8 +110,12 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/webp" href="/images/marcas/logo-willian.webp" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1e40af" />
+    {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.brand} />
@@ -75,8 +123,15 @@ const jsonLd = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Cozinha planejada montada por Willian, montador de móveis em Novo Hamburgo." />
     <meta property="og:locale" content="pt_BR" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -90,6 +145,7 @@ const jsonLd = {
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.ga4}`}></script>
     <script is:inline set:html={gtagInit}></script>
     <script is:inline set:html={gtmInit}></script>
+    <script is:inline set:html={stagingFallback}></script>
     <script is:inline>
       document.addEventListener('click', function (e) {
         var el = e.target && e.target.closest ? e.target.closest('[data-whatsapp-cta]') : null;

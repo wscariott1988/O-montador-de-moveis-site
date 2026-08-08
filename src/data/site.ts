@@ -1,7 +1,12 @@
+// Ambientes:
+// PRODUÇÃO  -> https://omontadordemoveis.com/  (index, follow, canonical oficial, sitemap oficial)
+// STAGING   -> preview deployment (noindex, nofollow; canonical continua oficial)
+// O ambiente é determinado pelas variáveis de ambiente oficiais da Vercel (VERCEL_ENV).
+// O domínio oficial nunca deve ser definido em mais de um lugar do projeto.
 export const SITE = {
   brand: "Willian | O Montador de Móveis",
   name: "Willian O Montador de Móveis",
-  url: "https://omontadordemoveis.com",
+  url: "https://omontadordemoveis.com/",
   phoneDisplay: "(51) 98016-8744",
   whatsappNumber: "5551980168744",
   region: "Novo Hamburgo e Vale dos Sinos",
@@ -9,8 +14,26 @@ export const SITE = {
   gtm: "GTM-WV6RLBVN",
 };
 
+const env = import.meta.env as Record<string, string | undefined>;
+
+export const siteUrl = env.PUBLIC_SITE_URL || SITE.url;
+
+// Produção/preview é definido pela Vercel (VERCEL_ENV).
+// VERCEL_URL NÃO decide staging aqui: em produção ela costuma ser o domínio
+// customizado, mas não deve ser a fonte de decisão de indexação.
+export const isStaging = env.VERCEL_ENV === "preview";
+
+// Proteção complementar (não decide produção): um deployment de produção pode
+// ser acessado via alias *.vercel.app. Um script de fallback por hostname injeta
+// noindex nesse caso. Isso NUNCA define se o domínio oficial indexa nem muda o
+// canonical em runtime.
+
+export const googleSiteVerification = env.PUBLIC_GOOGLE_SITE_VERIFICATION || "";
+
+export const absoluteUrl = (path: string) => new URL(path, siteUrl).href;
+
 export const WHATSAPP_DEFAULT_MESSAGE =
-  "Olá, Willian! Vi seu site e gostaria de solicitar um orçamento para montagem de móveis.";
+  "Olá, Willian! Gostaria de solicitar um orçamento para montagem de móveis.";
 
 export const whatsappUrl = (message: string = WHATSAPP_DEFAULT_MESSAGE) =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;

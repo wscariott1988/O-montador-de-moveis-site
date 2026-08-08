@@ -15,7 +15,7 @@ const wa = whatsappUrl();
       <ul class="mt-8 flex flex-wrap justify-center gap-3">
         {CITIES.map((cidade) => (
           <li class="inline-flex items-center gap-2 bg-surface border border-border-subtle text-muted-dark font-semibold text-sm px-4 py-2 rounded-full shadow-sm">
-            <span class="material-symbols-outlined text-amber text-base">location_on</span>
+            <span class="material-symbols-outlined text-amber text-base" aria-hidden="true">location_on</span>
             {cidade}
           </li>
         ))}
@@ -26,7 +26,7 @@ const wa = whatsappUrl();
           data-whatsapp-cta="regiao"
           class="inline-flex items-center justify-center gap-2 bg-whatsapp text-white font-bold px-8 py-4 rounded-lg hover:brightness-105 transition-all shadow-sm"
         >
-          <span class="material-symbols-outlined">chat</span>
+          <span class="material-symbols-outlined" aria-hidden="true">chat</span>
           Consultar Disponibilidade
         </a>
       </div>

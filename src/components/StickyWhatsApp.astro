@@ -3,7 +3,7 @@ import { whatsappUrl } from "../data/site";
 const wa = whatsappUrl();
 ---
 
-<nav
+<div
   class="fixed bottom-0 left-0 w-full z-50 flex justify-center items-center h-16 md:hidden px-4 bg-whatsapp shadow-[0_-4px_20px_rgba(0,0,0,0.15)]"
   style="padding-bottom: env(safe-area-inset-bottom)"
 >
@@ -12,7 +12,7 @@ const wa = whatsappUrl();
     data-whatsapp-cta="sticky-mobile"
     class="flex flex-row items-center justify-center gap-2 w-full h-full text-white font-bold text-base active:scale-95 transition-all"
   >
-    <span class="material-symbols-outlined">chat</span>
+    <span class="material-symbols-outlined" aria-hidden="true">chat</span>
     Orçamento Grátis
   </a>
-</nav>
+</div>
