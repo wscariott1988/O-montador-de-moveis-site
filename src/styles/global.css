@@ -1,7 +1,8 @@
+@import "@fontsource-variable/manrope";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   --color-primary: #1e40af;
   --color-primary-light: #2563eb;
@@ -28,4 +29,19 @@
   body {
     @apply bg-background text-ink antialiased;
   }
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
 }

@@ -53,8 +53,8 @@ export const SERVICES = [
     iconBg: "bg-primary-soft",
     title: "Móveis Planejados",
     description:
-      "Além das montagens, transformo seu ambiente com projetos de móveis planejados com meu exclusivo Método SIM.",
-    check: "Corte sob medida",
+      "Além das montagens, realizo projetos de móveis planejados sob medida, do planejamento à instalação, com o Método SIM.",
+    check: "Projeto sob medida",
   },
 ];
 
