@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { SITE } from "../data/site";
+import { CITIES, SITE } from "../data/site";
 
 interface Props {
   title?: string;
@@ -10,8 +10,8 @@ interface Props {
 }
 
 const {
-  title = "Montador de Móveis em Novo Hamburgo e Região | Willian",
-  description = "Montagem de móveis convencionais e planejados em Novo Hamburgo e região do Vale dos Sinos. Mais de 6 anos de experiência. Envie fotos pelo WhatsApp e solicite orçamento.",
+  title = "Montador de Móveis em Novo Hamburgo e Vale dos Sinos | Willian",
+  description = "Montagem de móveis em Novo Hamburgo e Vale dos Sinos. Willian trabalha profissionalmente com montagem desde 2020 e já realizou mais de 5.000 montagens. Peça seu orçamento pelo WhatsApp.",
   canonical = SITE.url,
   ogImage = `${SITE.url}/images/fotos/willian-foto.webp`,
 } = Astro.props;
@@ -34,13 +34,28 @@ const gtmInit = `
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: SITE.brand,
-  description,
-  url: SITE.url,
-  telephone: `+55 ${SITE.whatsappNumber}`,
-  image: ogImage,
-  areaServed: "Novo Hamburgo e Vale dos Sinos",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE.url}/#willian`,
+      name: "Willian",
+      jobTitle: "Montador de Móveis",
+      url: SITE.url,
+      image: ogImage,
+      worksFor: { "@id": `${SITE.url}/#business` },
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": `${SITE.url}/#business`,
+      name: SITE.brand,
+      description,
+      url: SITE.url,
+      telephone: `+${SITE.whatsappNumber}`,
+      image: ogImage,
+      areaServed: CITIES,
+      founder: { "@id": `${SITE.url}/#willian` },
+    },
+  ],
 };
 ---
 

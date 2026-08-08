@@ -16,7 +16,11 @@ const wa = whatsappUrl();
     <div class="grid md:grid-cols-3 gap-6">
       {SERVICES.map((service) => (
         <article
-          class={`bg-surface rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle hover:border-primary/30 transition-all flex flex-col`}
+          class={`bg-surface rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border transition-all flex flex-col ${
+            service.featured
+              ? "border-primary bg-primary-soft/40 shadow-[0_4px_24px_rgba(30,64,175,0.12)]"
+              : "border-border-subtle hover:border-primary/30"
+          }`}
         >
           <div class={`w-12 h-12 md:w-14 md:h-14 ${service.iconBg} text-primary rounded-xl flex items-center justify-center mb-5`}>
             <span class="material-symbols-outlined text-2xl md:text-3xl">{service.icon}</span>

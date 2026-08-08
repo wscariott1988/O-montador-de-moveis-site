@@ -8,14 +8,15 @@
   --color-primary-light: #2563eb;
   --color-primary-fixed: #dde1ff;
   --color-primary-soft: #eef1ff;
-  --color-amber: #f59e0b;
-  --color-amber-soft: #fef3c7;
+  --color-amber: #ef9b11;
+  --color-amber-soft: #fdf1dc;
   --color-whatsapp: #25d366;
-  --color-background: #f8f9fa;
+  --color-background: #f9fafb;
   --color-surface: #ffffff;
   --color-surface-soft: #f3f4f5;
   --color-ink: #111827;
-  --color-muted: #444653;
+  --color-muted: #4b5563;
+  --color-muted-dark: #374151;
   --color-faint: #6b7280;
   --color-border-subtle: #e5e7eb;
 }
@@ -44,4 +45,13 @@
   direction: ltr;
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
   vertical-align: middle;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

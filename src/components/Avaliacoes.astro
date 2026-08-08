@@ -1,5 +1,5 @@
 ---
-import { AVALIACOES, whatsappUrl } from "../data/site";
+import { AVALIACOES, GOOGLE_REVIEWS_URL, whatsappUrl } from "../data/site";
 const wa = whatsappUrl();
 ---
 
@@ -7,25 +7,60 @@ const wa = whatsappUrl();
   <div class="max-w-[1200px] mx-auto px-4 md:px-6">
     <div class="text-center max-w-2xl mx-auto mb-12">
       <p class="text-xs font-bold uppercase tracking-widest text-amber">Avaliações</p>
-      <h2 class="text-2xl md:text-4xl font-extrabold text-ink mt-2">Clientes Satisfeitos Recomendam</h2>
-      <p class="text-lg text-muted mt-3">Avaliações reais de clientes atendidos em Novo Hamburgo e região.</p>
+      <h2 class="text-2xl md:text-4xl font-extrabold text-ink mt-2">O que os clientes dizem</h2>
+      <p class="mt-4 inline-flex items-center gap-2 text-amber">
+        <span class="tracking-tight" aria-hidden="true">★★★★★</span>
+        <span class="text-sm font-semibold text-muted">Avaliações no Google</span>
+      </p>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {AVALIACOES.map((src) => (
-        <img
-          src={src}
-          width="800"
-          height="400"
-          alt="Avaliação de cliente satisfeito sobre serviço de montagem de móveis em Novo Hamburgo"
-          loading="lazy"
-          decoding="async"
-          class="w-full h-auto rounded-xl border border-border-subtle shadow-sm"
-        />
-      ))}
+    <div class="relative">
+      <div
+        id="avaliacoes-scroll"
+        class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 md:gap-6 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
+      >
+        {AVALIACOES.map((avaliacao) => (
+          <article class="snap-center shrink-0 w-[85%] sm:w-[75%] md:w-[calc(50%-0.75rem)] bg-surface rounded-2xl p-6 md:p-8 border border-border-subtle shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+            <div class="text-amber tracking-tight mb-4" role="img" aria-label="5 estrelas">★★★★★</div>
+            <p class="text-muted leading-relaxed">"{avaliacao.texto}"</p>
+            <div class="mt-6 pt-5 border-t border-border-subtle">
+              <p class="font-bold text-ink">{avaliacao.nome}</p>
+              <p class="text-sm text-faint mt-0.5">Avaliação no Google</p>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
 
-    <div class="text-center mt-10">
+    <div class="flex items-center justify-center gap-3 mt-8">
+      <button
+        type="button"
+        data-av-scroll="prev"
+        aria-label="Avaliações anteriores"
+        class="w-10 h-10 rounded-full border border-border-subtle bg-surface text-primary shadow-sm hover:bg-background transition-colors flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button
+        type="button"
+        data-av-scroll="next"
+        aria-label="Próximas avaliações"
+        class="w-10 h-10 rounded-full border border-border-subtle bg-surface text-primary shadow-sm hover:bg-background transition-colors flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
+      <a
+        href={GOOGLE_REVIEWS_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-primary font-bold text-sm hover:underline"
+      >
+        <span class="material-symbols-outlined text-base">open_in_new</span>
+        Ver mais avaliações no Google
+      </a>
       <a
         href={wa}
         data-whatsapp-cta="avaliacoes"
@@ -37,3 +72,15 @@ const wa = whatsappUrl();
     </div>
   </div>
 </section>
+
+<script>
+  const scroller = document.getElementById("avaliacoes-scroll");
+  if (scroller) {
+    document.querySelectorAll("[data-av-scroll]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const direction = button.getAttribute("data-av-scroll") === "prev" ? -1 : 1;
+        scroller.scrollBy({ left: direction * scroller.clientWidth, behavior: "smooth" });
+      });
+    });
+  }
+</script>
