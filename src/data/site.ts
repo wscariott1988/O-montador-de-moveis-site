@@ -35,6 +35,9 @@ export const CITIES = [
   "Campo Bom",
   "Estância Velha",
   "Sapucaia do Sul",
+  "Dois Irmãos",
+  "Ivoti",
+  "Sapiranga",
 ];
 
 export const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/q7QVvqXvdefiMxkP7";
