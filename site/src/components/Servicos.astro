@@ -1,0 +1,45 @@
+---
+import { SERVICES, whatsappUrl } from "../data/site";
+const wa = whatsappUrl();
+---
+
+<section id="servicos" class="scroll-mt-24 py-16 md:py-24">
+  <div class="max-w-[1200px] mx-auto px-4 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <p class="text-xs font-bold uppercase tracking-widest text-amber">Serviços</p>
+      <h2 class="text-2xl md:text-4xl font-extrabold text-ink mt-2">Soluções Completas em Montagem</h2>
+      <p class="text-lg text-muted mt-3">
+        Ofereço um serviço de excelência, seja na montagem de um móvel novo ou em reparos e regulagens.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {SERVICES.map((service) => (
+        <article
+          class={`bg-surface rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle hover:border-primary/30 transition-all flex flex-col`}
+        >
+          <div class={`w-12 h-12 md:w-14 md:h-14 ${service.iconBg} text-primary rounded-xl flex items-center justify-center mb-5`}>
+            <span class="material-symbols-outlined text-2xl md:text-3xl">{service.icon}</span>
+          </div>
+          <h3 class="text-xl font-bold text-ink mb-2">{service.title}</h3>
+          <p class="text-muted flex-grow">{service.description}</p>
+          <span class="mt-5 text-sm font-bold text-primary flex items-center gap-1">
+            {service.check}
+            <span class="material-symbols-outlined text-base">check_circle</span>
+          </span>
+        </article>
+      ))}
+    </div>
+
+    <div class="text-center mt-10">
+      <a
+        href={wa}
+        data-whatsapp-cta="servicos"
+        class="inline-flex items-center justify-center gap-2 bg-amber text-ink font-bold px-8 py-4 rounded-lg hover:brightness-105 transition-all shadow-sm"
+      >
+        <span class="material-symbols-outlined">chat</span>
+        Pedir Orçamento pelo WhatsApp
+      </a>
+    </div>
+  </div>
+</section>

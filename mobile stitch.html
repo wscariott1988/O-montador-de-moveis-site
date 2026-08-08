@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Willian | Montador de Móveis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "error-container": "#ffdad6",
+                  "on-primary": "#ffffff",
+                  "on-primary-container": "#a8b8ff",
+                  "surface-container-low": "#f3f4f5",
+                  "tertiary-fixed-dim": "#bdc7db",
+                  "primary-fixed-dim": "#b8c4ff",
+                  "inverse-on-surface": "#f0f1f2",
+                  "on-secondary-container": "#684000",
+                  "on-secondary": "#ffffff",
+                  "primary-container": "#1e40af",
+                  "secondary-fixed-dim": "#ffb95e",
+                  "on-tertiary-fixed-variant": "#3d4757",
+                  "tertiary-fixed": "#d9e3f7",
+                  "whatsapp-green": "#25D366",
+                  "outline-variant": "#c4c5d5",
+                  "on-primary-fixed": "#001453",
+                  "surface-container": "#edeeef",
+                  "border-subtle": "#E5E7EB",
+                  "tertiary": "#2b3545",
+                  "text-primary": "#111827",
+                  "surface-tint": "#3755c3",
+                  "inverse-surface": "#2e3132",
+                  "on-primary-fixed-variant": "#173bab",
+                  "surface": "#FFFFFF",
+                  "background": "#f8f9fa",
+                  "primary-fixed": "#dde1ff",
+                  "surface-variant": "#e1e3e4",
+                  "on-secondary-fixed-variant": "#653e00",
+                  "on-surface": "#191c1d",
+                  "surface-container-highest": "#e1e3e4",
+                  "surface-bright": "#f8f9fa",
+                  "surface-container-lowest": "#ffffff",
+                  "secondary": "#855300",
+                  "on-tertiary-container": "#b2bcd0",
+                  "secondary-container": "#fda621",
+                  "on-secondary-fixed": "#2a1700",
+                  "surface-dim": "#d9dadb",
+                  "on-tertiary-fixed": "#121c2a",
+                  "on-background": "#191c1d",
+                  "outline": "#757684",
+                  "surface-container-high": "#e7e8e9",
+                  "on-surface-variant": "#444653",
+                  "tertiary-container": "#424c5c",
+                  "on-error-container": "#93000a",
+                  "on-error": "#ffffff",
+                  "inverse-primary": "#b8c4ff",
+                  "on-tertiary": "#ffffff",
+                  "primary": "#00288e",
+                  "secondary-fixed": "#ffddb7",
+                  "error": "#ba1a1a"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "section-padding": "80px",
+                  "container-max": "1200px",
+                  "gutter": "24px",
+                  "stack-sm": "8px",
+                  "stack-md": "16px",
+                  "stack-lg": "32px",
+                  "margin-mobile": "16px"
+          },
+          "fontFamily": {
+                  "body-lg": ["Manrope"],
+                  "body-md": ["Manrope"],
+                  "headline-xl": ["Manrope"],
+                  "headline-md": ["Manrope"],
+                  "label-md": ["Manrope"],
+                  "label-lg": ["Manrope"],
+                  "headline-lg-mobile": ["Manrope"],
+                  "headline-lg": ["Manrope"],
+                  "headline-xl-mobile": ["Manrope"]
+          },
+          "fontSize": {
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                  "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                  "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                  "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "800"}]
+          }
+        },
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary font-body-md antialiased pb-20 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-gutter h-16 md:h-20 bg-surface/95 backdrop-blur-md bg-surface dark:bg-inverse-surface border-b border-border-subtle dark:border-outline-variant shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary" data-icon="menu">menu</span>
+</div>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+      Willian Montador de Móveis
+    </div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary" data-icon="chat">chat</span>
+</div>
+</header>
+<main class="pt-20 md:pt-24 max-w-container-max mx-auto px-margin-mobile md:px-gutter space-y-section-padding">
+<!-- Hero Section -->
+<section class="flex flex-col gap-stack-lg pt-8">
+<div class="space-y-stack-md text-center">
+<div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1 rounded-full font-label-md text-label-md text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+          MONTAGEM DE MÓVEIS • NOVO HAMBURGO E REGIÃO
+        </div>
+<h1 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-primary-fixed-dim">
+          Precisa de um montador de móveis?
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+          Orçamento grátis pelo WhatsApp em menos de 5 minutos. Consulte valor e disponibilidade para sua montagem.
+        </p>
+</div>
+<div class="flex flex-col items-center gap-stack-sm">
+<a class="inline-flex items-center justify-center gap-2 bg-primary-container text-on-primary font-label-lg text-label-lg px-8 py-4 rounded-xl hover:bg-primary-fixed-dim transition-colors shadow-sm w-full md:w-auto" href="https://wa.link/c3gber">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+          Pedir Orçamento Grátis
+        </a>
+<p class="font-label-md text-label-md text-on-surface-variant">
+          Rápido • Sem compromisso • Direto pelo WhatsApp
+        </p>
+</div>
+<div class="flex flex-wrap justify-center gap-4 text-center font-label-md text-label-md text-on-surface-variant mt-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-secondary-container" data-icon="check_circle">check_circle</span> +5 anos de experiência</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-secondary-container" data-icon="check_circle">check_circle</span> Atendimento no Vale dos Sinos</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-secondary-container" data-icon="check_circle">check_circle</span> Montagem profissional</span>
+</div>
+<div class="w-full h-80 rounded-2xl overflow-hidden mt-8 shadow-sm">
+<img alt="Willian trabalhando" class="w-full h-full object-cover" data-alt="A medium shot portrait of a professional furniture assembler, Willian, smiling confidently with his arms crossed. He is wearing a dark grey polo shirt. The background is a clean, neutral grey studio backdrop. High-key, even lighting with a bright, modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida/AP1WRLvlRmoGKJJ-BPjNVmPRq1K4hnh_VPwPLnhwm5oPM28ygquImye3eGNhHmTdqfQbkmwmTQCiuifMQh9gklz1wA_WuNCXxeK9eQlTsJCwyWTcOr9qqwNrbFVFDAeyHJi2ABzQw-azV0gFW0OZE8RGnC7NxQPcQNLEm9kFCwiEcJ3i3BGd4OslQtxPCsIltH_yuYyFLq6smkmDRTTKzeErXyOi6XEc3UKF8Z6aNwI4GO8tlz7OZP2e8p2luKg"/>
+</div>
+</section>
+<!-- Proof Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-stack-md bg-surface p-8 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle">
+<div class="text-center space-y-2">
+<div class="font-headline-xl-mobile text-headline-xl-mobile text-secondary-container">+5</div>
+<div class="font-label-lg text-label-lg text-on-surface-variant">Anos de Experiência</div>
+</div>
+<div class="text-center space-y-2 border-y md:border-y-0 md:border-x border-border-subtle py-4 md:py-0">
+<div class="font-headline-xl-mobile text-headline-xl-mobile text-secondary-container">+5.000</div>
+<div class="font-label-lg text-label-lg text-on-surface-variant">Móveis Montados</div>
+</div>
+<div class="text-center space-y-2">
+<div class="font-headline-xl-mobile text-headline-xl-mobile text-secondary-container">5</div>
+<div class="font-label-lg text-label-lg text-on-surface-variant">Cidades Atendidas</div>
+</div>
+</section>
+<!-- Services -->
+<section class="space-y-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-center text-primary-fixed-dim">
+        O que posso montar para você
+      </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<div class="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle flex flex-col items-center text-center gap-4">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="wardrobe">downloading</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Guarda-roupas e Cômodas</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Montagem precisa de dormitórios completos com perfeito alinhamento de portas e gavetas.</p>
+</div>
+<div class="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle flex flex-col items-center text-center gap-4">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="kitchen">kitchen</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Armários de Cozinha</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Instalação segura e nivelada de balcões e aéreos, garantindo durabilidade.</p>
+</div>
+<div class="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle flex flex-col items-center text-center gap-4">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="tv">tv</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Racks e Painéis</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Fixação firme na parede e montagem cuidadosa para sua sala de estar.</p>
+</div>
+<div class="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-border-subtle flex flex-col items-center text-center gap-4">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="chair">chair</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Mesas e Cadeiras</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Montagem estrutural garantindo que os móveis não fiquem bambos.</p>
+</div>
+</div>
+<div class="text-center mt-8">
+<a class="inline-flex items-center justify-center gap-2 border-2 border-primary-container text-primary-container font-label-lg text-label-lg px-8 py-4 rounded-xl hover:bg-surface-container-low transition-colors w-full md:w-auto" href="https://wa.link/c3gber">
+          Já sabe o que precisa montar?
+        </a>
+</div>
+</section>
+<!-- Portfolio Grid -->
+<section class="space-y-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-center text-primary-fixed-dim">
+        Algumas montagens realizadas
+      </h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="aspect-square rounded-2xl overflow-hidden shadow-sm">
+<img alt="Montagem de cômoda" class="w-full h-full object-cover" data-alt="A beautifully assembled modern white wooden dresser with brown accents, placed in a bright bedroom with pale blue striped wallpaper and subtle dinosaur patterns. High-key natural lighting, clean and premium aesthetic." src="https://lh3.googleusercontent.com/aida/AP1WRLsaTY30XsheYxBMxVTupWJC4GAopHLhMdwjKqI25CSmDdy_U5ZOxDa7x7CWKvUISYRvOu2dEfm_NHAWw3XKzha8Sf7X76f5bHagCAWvzB2XF_Bu1eGbbLMNt2Argq_wPxoEpA84GNpT3HGoMoRCLWUU6KKolG8ThalWkW7cTVFpyPqJHtHWTAaBt6p1a7CP7zndi_Tj1wk2YNulGnEa7056MfL91EAVQARh1kPi0QtppTyeB5OOnkEwT6E"/>
+</div>
+<div class="aspect-square rounded-2xl overflow-hidden shadow-sm">
+<img alt="Montagem de sala" class="w-full h-full object-cover" data-alt="A modern living room featuring a large flat-screen TV mounted on a white paneled wall above a sleek black media console. Large glass doors open to a bright blue sky. Bright, natural lighting, contemporary premium interior design." src="https://lh3.googleusercontent.com/aida/AP1WRLvOzomwLvfCwxdJGI-Jy-qai85uow5mzpyyMwuFLAZw2iqQlmmodfT3pZ5JelW24zAd6i-WRqY4a4yYtwcPnLYFi3fcv2RR7Kbv-BBLzA5HAy1PYLZiIJpI8MC-EfkCgSuYh5I8pO8PL3xidUL7xueU1Loz8jAaob6OsP-om68Xa5HOlXRj07rvjVwZQGD3E0np9cWhp4_NBCdUF8J2sWrG1pW0irmCnXDptYp4NqhjkEim-gD8ImL0NwM"/>
+</div>
+<div class="aspect-square rounded-2xl overflow-hidden shadow-sm col-span-2 md:col-span-1">
+<img alt="Montagem de cozinha" class="w-full h-full object-cover" data-alt="A clean, newly installed kitchen featuring white wall cabinets with decorative cutouts, a wooden counter section, and a black stone sink counter. Tiled walls. Bright, functional overhead lighting, neat and professional assembly." src="https://lh3.googleusercontent.com/aida/AP1WRLv5Lg4WZFq_ii1DTery2z8uWpuNlLib1JpDe3DjCWH9CvDudM9KahEoP1UbCpBTsK3We6ZnoOon86C-h7FrQnwEJv8Q8AJr64j7OUcflEy9KedrTbXYNWLs9yLOJyOvKXwNkjLfYoO5IyKYWSp8aZcr_kk_2FK3JXebwOfsRGRFWD1mDbDhz8NArTmc8EpHwU0RfpCFYfN-bb1tGSQ0_daDhLfgyxvsLRVXvt8wJHULpsnsLWNwIJv1Ea4"/>
+</div>
+</div>
+</section>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-center items-center h-16 md:hidden px-4 py-2 bg-whatsapp-green dark:bg-whatsapp-green shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+<a class="flex flex-row items-center justify-center gap-2 w-full h-full text-on-primary font-bold font-label-lg text-label-lg hover:brightness-110 transition-all active:scale-95 duration-150" href="https://wa.link/c3gber">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+        Pedir Orçamento Grátis
+      </a>
+</nav>
+</main>
+</body></html>

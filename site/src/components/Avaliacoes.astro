@@ -1,0 +1,39 @@
+---
+import { AVALIACOES, whatsappUrl } from "../data/site";
+const wa = whatsappUrl();
+---
+
+<section id="avaliacoes" class="scroll-mt-24 py-16 md:py-24">
+  <div class="max-w-[1200px] mx-auto px-4 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <p class="text-xs font-bold uppercase tracking-widest text-amber">Avaliações</p>
+      <h2 class="text-2xl md:text-4xl font-extrabold text-ink mt-2">Clientes Satisfeitos Recomendam</h2>
+      <p class="text-lg text-muted mt-3">Avaliações reais de clientes atendidos em Novo Hamburgo e região.</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {AVALIACOES.map((src) => (
+        <img
+          src={src}
+          width="800"
+          height="400"
+          alt="Avaliação de cliente satisfeito sobre serviço de montagem de móveis em Novo Hamburgo"
+          loading="lazy"
+          decoding="async"
+          class="w-full h-auto rounded-xl border border-border-subtle shadow-sm"
+        />
+      ))}
+    </div>
+
+    <div class="text-center mt-10">
+      <a
+        href={wa}
+        data-whatsapp-cta="avaliacoes"
+        class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-lg hover:bg-primary-light transition-colors shadow-sm"
+      >
+        <span class="material-symbols-outlined">chat</span>
+        Orçamento no WhatsApp
+      </a>
+    </div>
+  </div>
+</section>

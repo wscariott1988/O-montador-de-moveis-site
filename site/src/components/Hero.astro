@@ -1,0 +1,78 @@
+---
+import { whatsappUrl } from "../data/site";
+const wa = whatsappUrl();
+---
+
+<section class="pt-28 md:pt-40 pb-12 md:pb-16">
+  <div class="max-w-[1200px] mx-auto px-4 md:px-6">
+    <div class="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+      <div class="flex flex-col gap-5 md:gap-6 text-center md:text-left">
+        <span class="self-center md:self-start inline-flex items-center gap-2 bg-amber-soft text-amber text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-amber"></span>
+          Atendimento Imediato
+        </span>
+
+        <h1 class="text-3xl md:text-[40px] md:leading-[48px] font-extrabold text-ink leading-tight">
+          O Montador de Móveis Profissional em <span class="text-primary">Novo Hamburgo e Região</span>
+        </h1>
+
+        <p class="text-lg text-muted">
+          Montagem, reparos e projetos de móveis com o cuidado e a precisão que seu lar merece. Mais de 5.300
+          móveis montados com total satisfação.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+          <a
+            href={wa}
+            data-whatsapp-cta="hero"
+            class="inline-flex justify-center items-center gap-2 bg-whatsapp text-white font-bold px-8 py-4 rounded-lg hover:brightness-105 transition-all shadow-[0_4px_20px_rgba(37,211,102,0.3)]"
+          >
+            <span class="material-symbols-outlined">chat</span>
+            Solicitar Orçamento Grátis
+          </a>
+          <a
+            href="#servicos"
+            class="inline-flex justify-center items-center gap-2 border-2 border-primary text-primary font-bold px-8 py-4 rounded-lg hover:bg-primary hover:text-white transition-colors"
+          >
+            Ver Serviços
+          </a>
+        </div>
+
+        <ul class="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-2 text-sm text-muted">
+          <li class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-amber text-base">check_circle</span>
+            +6 anos de experiência
+          </li>
+          <li class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-amber text-base">check_circle</span>
+            Atendimento no Vale dos Sinos
+          </li>
+          <li class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-amber text-base">check_circle</span>
+            Montagem profissional
+          </li>
+        </ul>
+      </div>
+
+      <div class="relative">
+        <img
+          src="/images/fotos/willian-foto.webp"
+          width="1080"
+          height="664"
+          alt="Foto do montador de móveis Willian, especialista em montagem de móveis em Novo Hamburgo."
+          class="w-full h-auto aspect-square object-cover rounded-2xl shadow-xl"
+          fetchpriority="high"
+        />
+        <div class="absolute bottom-4 left-4 right-4 bg-surface/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-border-subtle flex items-center gap-3">
+          <div class="bg-primary-soft p-3 rounded-full text-primary">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">verified</span>
+          </div>
+          <div>
+            <p class="text-sm font-bold text-ink">Garantia de 90 Dias</p>
+            <p class="text-xs text-muted">Em todos os serviços</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

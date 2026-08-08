@@ -1,0 +1,98 @@
+---
+import "../styles/global.css";
+import { SITE } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const {
+  title = "Montador de Móveis em Novo Hamburgo e Região | Willian",
+  description = "Montagem de móveis convencionais e planejados em Novo Hamburgo e região do Vale dos Sinos. Mais de 6 anos de experiência. Envie fotos pelo WhatsApp e solicite orçamento.",
+  canonical = SITE.url,
+  ogImage = `${SITE.url}/images/fotos/willian-foto.webp`,
+} = Astro.props;
+
+const gtagInit = `
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', '${SITE.ga4}');
+`;
+
+const gtmInit = `
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', '${SITE.gtm}');
+`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: SITE.brand,
+  description,
+  url: SITE.url,
+  telephone: `+55 ${SITE.whatsappNumber}`,
+  image: ogImage,
+  areaServed: "Novo Hamburgo e Vale dos Sinos",
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/webp" href="/images/marcas/logo-willian.webp" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.ga4}`}></script>
+    <script is:inline set:html={gtagInit}></script>
+    <script is:inline set:html={gtmInit}></script>
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var el = e.target && e.target.closest ? e.target.closest('[data-whatsapp-cta]') : null;
+        if (!el) return;
+        var location = el.getAttribute('data-whatsapp-cta');
+        if (window.gtag) {
+          window.gtag('event', 'whatsapp_click', { cta_location: location });
+        } else if (window.dataLayer) {
+          window.dataLayer.push({ event: 'whatsapp_click', cta_location: location });
+        }
+      });
+    </script>
+  </head>
+  <body class="pb-20 md:pb-0">
+    <slot />
+  </body>
+</html>
