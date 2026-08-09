@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App Lucrativo</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzEwYjk4MSIgcng9IjEyMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjMyMCI+JTwvdGV4dD48L3N2Zz4=">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#10b981', 600: '#059669', 900: '#064e3b' },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        navy: { 800: '#1e293b', 900: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .tab-content { display: none; padding-bottom: 120px; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        input, select, textarea { 
+            background-color: #1e293b; border: 1px solid #334155; color: white; 
+            border-radius: 0.5rem; width: 100%; font-size: 1rem; transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { 
+            border-color: #10b981; outline: none; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); 
+        }
+        .input-mobile { height: 3.5rem; padding-left: 1rem; padding-right: 1rem; }
+        .check-btn { cursor: pointer; user-select: none; }
+        .check-btn input:checked + div { background-color: #10b981; border-color: #10b981; }
+        .logo-container { width: 100%; height: 120px; border: 2px dashed #475569; display: flex; align-items: center; justify-content: center; border-radius: 0.75rem; overflow: hidden; position: relative; background: #1e293b; }
+        .logo-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .birthday-glow { animation: pulse-gold 2s infinite; border-color: #f59e0b; }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+        .blur-sm { filter: blur(4px); user-select: none; }
+        .prog-container { width: 100%; background: #334155; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
+        .prog-bar { height: 100%; transition: width 1s ease-in-out; background: linear-gradient(90deg, #10b981, #34d399); }
+        
+        /* LOGIN */
+        #loginScreen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(to bottom, #020617, #1e293b); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px; overflow-y: auto; }
+        #appContent { display: none; }
+        .login-input { border-color: #fbbf24 !important; color: #fbbf24 !important; }
+        .login-input::placeholder { color: #b45309 !important; }
+        .logo-animate { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        /* Aviso Offline */
+        #offlineIndicator { position: fixed; top: 0; left: 0; right: 0; background: #ef4444; color: white; text-align: center; font-size: 10px; padding: 2px; z-index: 10000; display: none; font-weight: bold; }
+    </style>
+</head>
+<body class="pb-24">
+    <div id="offlineIndicator">⚠️ SEM INTERNET - MODO OFFLINE (Algumas funções limitadas)</div>
+
+    <div id="loginScreen">
+        <div class="w-full max-w-sm text-center">
+            <div class="mt-10 mb-8 flex justify-center transform hover:scale-105 transition duration-500 flex-col items-center">
+                <img src="logo.png" onerror="this.style.display='none'; document.getElementById('logoTextFallback').style.display='block';" class="w-48 mb-4 max-w-full drop-shadow-xl logo-animate" alt="Logo">
+                <div id="logoTextFallback" style="display:none;" class="text-3xl font-black text-gold-500 uppercase tracking-tighter logo-animate" style="text-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);">Sistema<br>Montador<br>Lucrativo</div>
+            </div>
+
+            <div class="bg-navy-800/80 p-6 rounded-xl border border-slate-700 shadow-2xl backdrop-blur-sm mb-6 relative overflow-hidden">
+                <input type="email" id="loginEmail" placeholder="SEU E-MAIL" class="input-mobile mb-3 text-center font-bold login-input focus:ring-2 focus:ring-gold-500 bg-navy-800/50">
+                
+                <input type="password" id="loginSenha" placeholder="SUA SENHA" class="input-mobile mb-3 text-center font-bold login-input bg-navy-800/50">
+                <input type="text" id="codigoConvite" placeholder="CÓD. CONVITE (Apenas 1º Acesso)" class="input-mobile mb-4 text-center text-xs border-slate-600 bg-slate-900/50">
+                
+                <button onclick="fazerLogin()" class="w-full h-12 rounded-lg font-black text-white shadow-lg hover:scale-[1.02] transition-transform mb-3 bg-emerald-600 uppercase tracking-wide text-sm">ENTRAR</button>
+                <button onclick="registrarNovaConta()" class="w-full h-12 rounded-lg font-bold text-white shadow border border-gold-500 text-gold-500 hover:bg-gold-500/10 uppercase text-sm">CRIAR CONTA (Primeiro Acesso)</button>
+                
+                <button onclick="recuperarSenha()" class="mt-4 text-xs text-slate-400 hover:text-white underline transition-colors w-full text-center">
+                    Esqueci minha senha
+                </button>
+            </div>
+            
+            <p id="msgErro" class="text-red-400 text-sm font-bold hidden mb-4 bg-red-900/20 p-2 rounded border border-red-900/50"></p>
+            
+            <div class="mt-4 bg-red-900/10 border border-red-900/30 p-3 rounded text-left">
+                <div class="flex items-center gap-2 mb-1 text-red-500 font-bold text-[10px] uppercase">
+                    <i data-lucide="shield-alert" class="w-4 h-4"></i> Monitoramento de Segurança
+                </div>
+                <p class="text-[10px] text-slate-400 leading-tight">
+                    Licença de uso <b>pessoal e intransferível</b>. O sistema registrou seu acesso:
+                </p>
+                <p class="text-[10px] text-gold-500 font-mono mt-1 mb-1" id="displayIP">Detectando IP...</p>
+                <p class="text-[9px] text-red-400/80">
+                    ⚠️ O compartilhamento de senha resultará no bloqueio imediato da conta. Geolocalização ativa.
+                </p>
+            </div>
+        </div>
+        <div class="mt-8 text-slate-700 text-[9px] font-medium uppercase tracking-widest">© 2026 Sistema Montador Lucrativo</div>
+    </div>
+
+    <div id="appContent">
+        <header class="px-4 py-3 border-b border-slate-700 bg-slate-900/95 backdrop-blur sticky top-0 z-40 flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="font-bold text-sm leading-tight text-slate-100">Sistema Montador Lucrativo</h1>
+                <a href="https://www.instagram.com/omontador.lucrativo/" target="_blank" class="text-[10px] text-brand-400 hover:text-brand-300 flex items-center gap-1 cursor-pointer mt-0.5 font-medium transition-colors">
+                    Por Willian Scariott <i data-lucide="instagram" class="w-3 h-3"></i>
+                </a>
+            </div>
+            <div class="text-right flex flex-col items-end">
+                <p class="text-[9px] text-slate-400 uppercase tracking-wider mb-1">Valor hora c/ lucro</p>
+                <div class="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 cursor-pointer hover:bg-slate-700 transition" onclick="togglePrivacidade()">
+                    <div id="valorHoraBadge" class="text-brand-500 font-bold text-lg transition-all">R$ 0,00</div>
+                    <i id="eyeIcon" data-lucide="eye" class="w-4 h-4 text-slate-400"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 max-w-lg mx-auto">
+            
+            <section id="config" class="tab-content active">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-200">
+                    <i data-lucide="settings" class="text-brand-500"></i> Ajustes da Empresa
+                </h2>
+
+                <div class="bg-slate-800 p-4 rounded-xl mb-4 space-y-4 border border-slate-700">
+                    <h3 class="font-bold text-slate-300 border-b border-slate-600 pb-2">Identidade Visual</h3>
+                    <div class="logo-container cursor-pointer hover:border-brand-500 transition" onclick="document.getElementById('logoInput').click()">
+                        <img id="imgPreview" class="hidden logo-img">
+                        <div id="logoPlaceholder" class="text-center text-slate-500">
+                            <i data-lucide="image-plus" class="mx-auto mb-2 opacity-50 w-8 h-8"></i>
+                            <span class="text-xs">Toque para adicionar Logo</span>
+                        </div>
+                    </div>
+                    <input type="file" id="logoInput" accept="image/*" class="hidden" onchange="processarLogo(this)">
+                    <button onclick="removerLogo()" id="btnRemoveLogo" class="hidden mt-2 text-xs text-red-400 w-full text-center py-2 uppercase font-bold tracking-wide">Remover Logo</button>
+
+                    <input type="text" id="confNome" placeholder="Nome da Empresa / Profissional" class="input-mobile" oninput="salvarTudo()">
+                    <input type="text" id="confCnpj" placeholder="CPF ou CNPJ" class="input-mobile" oninput="mascaraDocumento(this); salvarTudo()">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="confEndereco" placeholder="Endereço" class="input-mobile" oninput="salvarTudo()">
+                        <input type="text" id="confCidade" placeholder="Cidade/UF" class="input-mobile" oninput="salvarTudo()">
+                    </div>
+                    <input type="text" id="confInsta" placeholder="Instagram (sem @)" class="input-mobile" oninput="salvarTudo()">
+                    <input type="text" id="confReviewLink" placeholder="Link Avaliação Google" class="input-mobile border-yellow-900 focus:border-yellow-500" oninput="salvarTudo()">
+                    <input type="text" id="confPix" placeholder="Chave Pix" class="input-mobile border-brand-900 focus:border-brand-500" oninput="salvarTudo()">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button onclick="modalMeusServicos()" class="py-4 bg-slate-800 rounded-xl border border-slate-700 flex flex-col items-center justify-center gap-2 hover:bg-slate-700 transition">
+                        <i data-lucide="list-plus" class="text-brand-400"></i><span class="text-xs font-bold text-white">Catálogo</span>
+                    </button>
+                    <button onclick="modalFerramentas()" class="py-4 bg-slate-800 rounded-xl border border-slate-700 flex flex-col items-center justify-center gap-2 hover:bg-slate-700 transition">
+                        <i data-lucide="wrench" class="text-blue-400"></i><span class="text-xs font-bold text-white">Ferramentas</span>
+                    </button>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl mb-4 space-y-4 border border-slate-700 mb-6">
+                    <h3 class="font-bold text-slate-300 border-b border-slate-600 pb-2">Precificação & Metas</h3>
+                    <div class="flex bg-slate-700 rounded-lg p-1">
+                        <button onclick="setRegime('mei')" id="btnMei" class="flex-1 py-2 rounded-md text-sm font-bold transition-all">MEI</button>
+                        <button onclick="setRegime('simples')" id="btnSimples" class="flex-1 py-2 rounded-md text-sm font-bold transition-all">Simples</button>
+                    </div>
+                    <div id="boxDas" class="bg-slate-900 p-3 rounded border border-slate-600">
+                        <label class="text-xs text-slate-400">Mensalidade DAS (MEI)</label>
+                        <input type="text" id="valorDas" value="R$ 81,05" class="input-mobile mt-1" oninput="mascaraMoeda(this); calcular()">
+                    </div>
+                    <div id="boxSimples" class="hidden">
+                        <label class="text-xs text-slate-400">Alíquota Imposto (%)</label>
+                        <input type="number" id="impostoSimples" value="6" class="input-mobile" oninput="calcular()">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="text-xs text-slate-400">Salário Desejado</label><input type="text" id="proLabore" class="input-mobile" oninput="mascaraMoeda(this); calcular()"></div>
+                        <div><label class="text-xs text-slate-400">Custos Fixos</label><input type="text" id="custosFixos" class="input-mobile" oninput="mascaraMoeda(this); calcular()"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="text-xs text-slate-400">Margem Lucro (%)</label><input type="number" id="metaLucro" value="30" class="input-mobile" oninput="calcular()"></div>
+                        <div><label class="text-xs text-slate-400">Depreciação</label><input type="text" id="depreciacaoAuto" disabled class="input-mobile bg-slate-900 text-slate-500 border-none"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="text-xs text-slate-400">Dias Trab./Mês</label><input type="number" id="diasMes" value="22" class="input-mobile" oninput="calcular()"></div>
+                        <div><label class="text-xs text-slate-400">Horas Trab./Dia</label><input type="number" id="horasDia" value="8" class="input-mobile" oninput="calcular()"></div>
+                    </div>
+                    
+                    <div class="mt-2 bg-slate-900 p-3 rounded border border-slate-600 flex justify-between items-center">
+                        <label class="text-xs text-slate-400 font-bold uppercase">Diária Sugerida</label>
+                        <span id="displayValorDiaria" class="font-black text-brand-400 text-xl">R$ 0,00</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-600">
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-bold uppercase">Faturamento Meta/Mês</label>
+                            <div id="displayReceitaNecessaria" class="text-white font-bold text-lg">R$ 0,00</div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-brand-400 font-bold uppercase">Lucro Previsto/Mês</label>
+                            <div id="displayLucroMensal" class="text-emerald-400 font-bold text-lg">R$ 0,00</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 p-4 rounded-xl mb-4 space-y-2 border border-slate-700">
+                    <h3 class="font-bold text-slate-300">Garantias e Benefícios (PDF)</h3>
+                    <textarea id="confBeneficios" rows="6" class="w-full bg-slate-900 p-3 rounded-lg text-sm text-slate-300 border border-slate-700" oninput="salvarTudo()">Com nosso serviço, você garante:
+✓ Montagem técnica e segura ✨
+✓ 90 dias de garantia total ✅
+✓ Pontualidade e limpeza no local 🤝
+✓ Ferramentas adequadas para não danificar o móvel 🛠️
+Sua satisfação é nossa prioridade! ⭐</textarea>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl mb-4 shadow-sm border border-slate-700 space-y-4 mb-20">
+                      <h3 class="font-bold text-slate-300 border-b border-slate-600 pb-2">☁️ Dados & Nuvem</h3>
+                      <p class="text-xs text-slate-400">Seus dados são salvos automaticamente na nuvem.</p>
+                      
+                      <button onclick="fazerBackupHibrido()" class="w-full py-3 bg-blue-600 rounded-lg font-bold text-sm text-white flex items-center justify-center gap-2 hover:bg-blue-500">
+                        <i data-lucide="share-2"></i> Backup WhatsApp / Arquivo
+                      </button>
+                      
+                      <button onclick="document.getElementById('fileBackup').click()" class="w-full py-3 bg-slate-700 rounded-lg font-bold text-sm text-white flex items-center justify-center gap-2 hover:bg-slate-600">
+                        <i data-lucide="upload"></i> Restaurar Backup
+                      </button>
+                      <input type="file" id="fileBackup" class="hidden" accept=".json" onchange="importarDados(this)">
+                      
+                      <button onclick="resetarApp()" class="w-full py-3 text-red-400 text-xs mt-2 border border-red-900/30 rounded hover:bg-red-900/10">⚠️ Sair e Limpar Dados (Reset)</button>
+                </div>
+            </section>
+
+            <section id="cli" class="tab-content">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-200"><i data-lucide="users" class="text-brand-500"></i> Meus Clientes</h2>
+                <div id="aniversariantesArea" class="hidden mb-4 bg-gradient-to-r from-amber-900/50 to-amber-700/30 border border-amber-600 p-4 rounded-xl flex items-center gap-3 shadow-lg birthday-glow">
+                    <div class="bg-amber-500 p-2 rounded-full text-white"><i data-lucide="cake"></i></div>
+                    <div><h3 class="font-bold text-amber-100">Aniversariante do Dia!</h3><p id="txtAniversariantes" class="text-xs text-amber-200"></p></div>
+                </div>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="modalEditCliente()" class="flex-1 bg-brand-600 py-3 rounded-lg font-bold text-white shadow-lg flex justify-center items-center gap-2"><i data-lucide="user-plus"></i> Novo Cliente</button>
+                </div>
+                <div class="relative mb-4">
+                    <input type="text" id="buscaCliente" placeholder="Buscar por nome..." class="input-mobile pl-10" oninput="filtrarClientes()">
+                    <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400 w-5 h-5"></i>
+                </div>
+                <div id="listaClientes" class="space-y-3 mb-20"></div>
+            </section>
+
+            <section id="calc" class="tab-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-slate-200"><i data-lucide="calculator" class="text-brand-500"></i> Orçamento</h2>
+                    <button onclick="novoOrcamento()" class="text-xs text-brand-400 border border-brand-900 bg-brand-900/20 px-4 py-2 rounded-lg font-bold hover:bg-brand-900/40">Limpar</button>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-brand-400 mb-2 uppercase tracking-wider flex items-center gap-2"><i data-lucide="hammer" class="w-4 h-4"></i> Serviços</h3>
+                    <div class="relative mb-2">
+                        <input type="text" id="buscaMovel" placeholder="Buscar serviço..." class="input-mobile pl-10" oninput="filtrarMoveis()">
+                        <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400 w-5 h-5"></i>
+                        <div id="listaSugestoes" class="absolute left-0 right-0 top-16 bg-slate-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto hidden border border-slate-600"></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="adicionarManual()" class="flex-1 py-3 border border-dashed border-slate-600 rounded-lg text-slate-400 text-sm hover:bg-slate-800 transition">+ Avulso</button>
+                        <button onclick="promptBuscaManual()" class="w-1/3 py-3 bg-slate-800 border border-slate-600 rounded-lg text-blue-400 text-xs font-bold hover:bg-slate-700 flex flex-col items-center justify-center gap-1"><i data-lucide="search-code" class="w-4 h-4"></i> Buscar Manual</button>
+                    </div>
+                    <div id="carrinho" class="space-y-2 mt-3"></div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-blue-400 mb-2 uppercase tracking-wider flex items-center gap-2"><i data-lucide="package" class="w-4 h-4"></i> Peças</h3>
+                    <div class="flex gap-2 mb-2">
+                        <select id="selPecas" class="input-mobile flex-1 text-sm bg-slate-800"><option value="">Selecionar...</option></select>
+                    </div>
+                    <div class="flex gap-2 mb-2">
+                        <input type="number" id="qtdPeca" placeholder="Qtd" class="input-mobile w-20">
+                        <input type="text" id="valorPeca" placeholder="R$ Unitário" class="input-mobile flex-1" oninput="mascaraMoeda(this)">
+                        <button onclick="addPeca()" class="bg-blue-600 w-16 rounded-lg flex items-center justify-center hover:bg-blue-500 text-white"><i data-lucide="plus"></i></button>
+                    </div>
+                    <div id="listaPecasCarrinho" class="space-y-2"></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl space-y-3 border border-slate-700">
+                    <h3 class="font-bold text-slate-300">Dados do Cliente</h3>
+                    <div class="flex gap-2"><input type="text" id="cliNome" placeholder="Nome" class="input-mobile flex-1"></div>
+                    <input type="text" id="cliCpf" placeholder="CPF (Opcional)" class="input-mobile mt-2" oninput="mascaraDocumento(this); salvarTudo()">
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <input type="text" id="cliCidade" placeholder="Cidade" class="input-mobile">
+                        <input type="date" id="cliData" class="input-mobile text-sm text-slate-300">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="text-[10px] text-slate-400">Validade (Dias)</label><input type="number" id="validadeDias" value="7" class="input-mobile"></div>
+                        <div><label class="text-[10px] text-slate-400">Deslocamento</label><input type="text" id="taxaDeslocamento" placeholder="R$ 0,00" class="input-mobile" oninput="mascaraMoeda(this); renderCarrinho()"></div>
+                    </div>
+                    <textarea id="obsGeral" rows="2" placeholder="Observações..." class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white mt-2"></textarea>
+                    <div class="pt-2 border-t border-slate-600 mt-2">
+                        <label class="text-xs text-slate-400 mb-2 block">Pagamento</label>
+                        <div class="grid grid-cols-2 gap-2" id="paymentOptions"></div>
+                        <input type="text" id="obsPagamento" placeholder="Condições (Ex: 3x cartão)" class="input-mobile mt-2 text-sm">
+                    </div>
+                </div>
+                <div class="bg-slate-900 border border-brand-900 p-4 rounded-xl mt-4 mb-2">
+                    <div class="flex justify-between items-end">
+                        <span class="text-slate-400 text-sm">Total Geral (Arredondado)</span>
+                        <span id="totalDisplay" class="text-3xl font-black text-brand-500">R$ 0</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 mt-4">
+                    <button onclick="agendarGoogle()" class="h-14 bg-slate-800 rounded-lg font-bold text-white flex items-center justify-center border border-slate-600 hover:bg-slate-700"><i data-lucide="calendar-plus"></i></button>
+                    <button onclick="abrirModalTexto()" class="h-14 bg-slate-700 rounded-lg font-bold text-white flex items-center justify-center gap-2 hover:bg-slate-600"><i data-lucide="copy"></i> Texto</button>
+                    <button onclick="gerarPDF()" class="h-14 bg-brand-600 rounded-lg font-bold text-white flex items-center justify-center gap-2 hover:bg-brand-500 shadow-lg shadow-brand-900/50"><i data-lucide="file-down"></i> PDF</button>
+                </div>
+                <div class="grid grid-cols-1 gap-2 mt-2 mb-20">
+                    <button onclick="gerarTermoGarantia()" class="h-12 bg-slate-800 border border-gold-600 text-gold-500 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-slate-700">
+                        <i data-lucide="shield-check"></i> Termo de Garantia (90 Dias)
+                    </button>
+                    <button onclick="salvarHistoricoManual()" class="h-12 bg-slate-800 border border-slate-600 rounded-lg font-bold text-slate-300 flex items-center justify-center hover:bg-slate-700">
+                        <i data-lucide="save" class="mr-2 w-4 h-4"></i> Salvar no Histórico
+                    </button>
+                </div>
+            </section>
+
+            <section id="hist" class="tab-content">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-200"><i data-lucide="history" class="text-brand-500"></i> Histórico</h2>
+                <div id="listaHistorico" class="space-y-3 mb-20"></div>
+            </section>
+
+            <section id="fin" class="tab-content">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-200"><i data-lucide="trending-up" class="text-brand-500"></i> Financeiro</h2>
+                
+                <div id="painelMEI" class="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-4 shadow-lg">
+                    <h3 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide flex items-center gap-1"><i data-lucide="bar-chart-2" class="w-3 h-3"></i> Monitoramento MEI (<span id="meiAno">2026</span>)</h3>
+                    <div class="flex justify-between items-end mb-1"><span id="valorAnualMEI" class="text-xl font-bold text-white">R$ 0,00</span><small class="text-slate-400">Limite: R$ 81k</small></div>
+                    <div class="w-full bg-slate-900 rounded-full h-4 mb-2 overflow-hidden border border-slate-700"><div id="barraMEI" class="bg-brand-500 h-4 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
+                    <div class="flex justify-between text-[10px] text-slate-500"><span id="porcentagemMEI">0% utilizado</span><span id="restanteMEI">Resta: R$ 81.000</span></div>
+                    <button onclick="exportarRelatorioMEI()" class="mt-3 w-full py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs text-white font-bold flex items-center justify-center gap-2"><i data-lucide="file-text" class="w-3 h-3"></i> Relatório Anual (PDF)</button>
+                </div>
+
+                <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700 mb-4 shadow-lg">
+                    <button onclick="changeMonth(-1)" class="p-2 text-slate-400 hover:text-white"><i data-lucide="chevron-left"></i></button>
+                    <div class="text-center"><div id="displayMesAno" class="font-bold text-lg text-white">Mês Atual</div></div>
+                    <button onclick="changeMonth(1)" class="p-2 text-slate-400 hover:text-white"><i data-lucide="chevron-right"></i></button>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-xl mb-4 border border-slate-700 shadow-lg relative overflow-hidden">
+                    <h3 class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">Balanço do Mês</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><span class="text-[10px] text-slate-400 uppercase">Faturado</span><div id="finEntradas" class="text-xl font-bold text-emerald-400">R$ 0,00</div></div>
+                        <div><span class="text-[10px] text-slate-400 uppercase">Saídas</span><div id="finSaidas" class="text-xl font-bold text-red-400">R$ 0,00</div></div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-700 flex justify-between items-center"><div><span class="text-[10px] text-slate-400 uppercase">Saldo Líquido</span><div id="finSaldo" class="text-3xl font-black text-white">R$ 0,00</div></div></div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-6 relative overflow-hidden">
+                    <div class="flex justify-between items-end mb-1"><span class="text-xs font-bold text-brand-400 uppercase">Meta do Mês</span><span id="txtMeta" class="text-xs text-slate-400">0%</span></div>
+                    <div class="prog-container mb-2"><div id="barraProgresso" class="prog-bar" style="width: 0%"></div></div>
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-3"><span>Início</span><span id="valorMetaAlvo">Meta: R$ 0</span></div>
+                    <div id="boxDiasRestantes" class="bg-slate-900/50 p-2 rounded border border-slate-700/50 flex items-center gap-2"><i data-lucide="clock" class="text-brand-500 w-4 h-4"></i><p id="txtDiasRestantes" class="text-xs text-slate-300">Calibrando...</p></div>
+                </div>
+
+                <h3 class="font-bold text-white mb-3">Obrigações & Governo</h3>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-de-contribuicao-mensal" target="_blank" class="p-3 bg-slate-800 border border-slate-700 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-slate-700 text-center">
+                        <i data-lucide="qr-code" class="text-white w-6 h-6"></i><span class="text-xs font-bold text-white">Pagar DAS</span>
+                    </a>
+                    <a href="https://www.nfse.gov.br/EmissorNacional" target="_blank" class="p-3 bg-slate-800 border border-slate-700 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-slate-700 text-center">
+                        <i data-lucide="file-check" class="text-white w-6 h-6"></i><span class="text-xs font-bold text-white">Emitir Nota (NFS-e)</span>
+                    </a>
+                </div>
+
+                <h3 class="font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="arrow-down-circle" class="w-4 h-4 text-red-400"></i> Saídas / Despesas</h3>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-6">
+                    <div class="flex flex-col gap-2">
+                        <input type="text" id="despesaDesc" placeholder="Ex: Gasolina, Almoço..." class="input-mobile">
+                        <div class="flex gap-2">
+                            <input type="text" id="despesaValor" placeholder="R$" class="input-mobile flex-1" oninput="mascaraMoeda(this)">
+                            <button onclick="addDespesa()" class="bg-red-600 px-6 rounded-lg font-bold text-white hover:bg-red-500"><i data-lucide="minus"></i></button>
+                        </div>
+                    </div>
+                    <div id="listaDespesas" class="mt-4 space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
+
+                <h3 class="font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="arrow-up-circle" class="w-4 h-4 text-emerald-400"></i> Entradas Avulsas</h3>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-6">
+                    <div class="flex flex-col gap-2">
+                        <input type="text" id="recAvulsaDesc" placeholder="Ex: Ajuda Mudança" class="input-mobile">
+                        <div class="flex gap-2">
+                            <input type="text" id="recAvulsaValor" placeholder="R$" class="input-mobile flex-1" oninput="mascaraMoeda(this)">
+                            <button onclick="addReceitaAvulsa()" class="bg-emerald-600 px-6 rounded-lg font-bold text-white hover:bg-emerald-500"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                    <div id="listaReceitasAvulsas" class="mt-4 space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
+
+                <h3 class="font-bold text-white mb-3">Ações Rápidas</h3>
+                <button onclick="modalReciboAvulso()" class="w-full py-4 bg-slate-800 rounded-xl border border-slate-700 flex items-center px-4 gap-4 mb-20 hover:bg-slate-700 transition">
+                    <div class="bg-blue-600/20 p-3 rounded-full text-blue-400"><i data-lucide="receipt"></i></div>
+                    <div class="text-left"><div class="font-bold text-white">Gerar Recibo Avulso</div></div>
+                    <i data-lucide="chevron-right" class="ml-auto text-slate-500"></i>
+                </button>
+            </section>
+        </main>
+
+        <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 h-16 z-50 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.3)]">
+            <div class="grid grid-cols-5 h-full items-end pb-1">
+                <button onclick="switchTab('config')" class="flex flex-col items-center justify-end w-full pb-2 text-slate-400 nav-btn group" id="nav-config"><i data-lucide="settings" class="mb-1 w-6 h-6 group-active:scale-90 transition"></i><span class="nav-text">Ajustes</span></button>
+                <button onclick="switchTab('cli')" class="flex flex-col items-center justify-end w-full pb-2 text-slate-400 nav-btn group" id="nav-cli"><i data-lucide="users" class="mb-1 w-6 h-6 group-active:scale-90 transition"></i><span class="nav-text">Clientes</span></button>
+                <div class="relative flex justify-center items-end w-full h-full pb-2"><button onclick="switchTab('calc')" class="absolute -top-6 text-brand-500 nav-btn group transform transition active:scale-95" id="nav-calc"><div class="bg-slate-800 p-3 rounded-full border border-slate-600 shadow-xl ring-4 ring-slate-900"><i data-lucide="plus" class="w-8 h-8 text-brand-500"></i></div></button></div>
+                <button onclick="switchTab('hist')" class="flex flex-col items-center justify-end w-full pb-2 text-slate-400 nav-btn group" id="nav-hist"><i data-lucide="file-text" class="mb-1 w-6 h-6 group-active:scale-90 transition"></i><span class="nav-text">Histórico</span></button>
+                <button onclick="switchTab('fin')" class="flex flex-col items-center justify-end w-full pb-2 text-slate-400 nav-btn group" id="nav-fin"><i data-lucide="trending-up" class="mb-1 w-6 h-6 group-active:scale-90 transition"></i><span class="nav-text">Finan.</span></button>
+            </div>
+        </nav>
+    </div> 
+    
+    <div id="modalEdit" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-sm border border-slate-600 shadow-2xl"><h3 class="font-bold text-lg mb-4 text-white">Editar Item</h3><label class="text-xs text-slate-400 block mb-1">Nome</label><input type="text" id="editNome" class="input-mobile mb-3"><div class="grid grid-cols-2 gap-3 mb-3"><div><label class="text-xs text-slate-400 block mb-1">Tempo (h)</label><input type="number" id="editTempo" class="input-mobile"></div><div><label class="text-xs text-slate-400 block mb-1">Valor Extra</label><input type="text" id="editExtra" class="input-mobile" oninput="mascaraMoeda(this)"></div></div><div class="flex gap-3 mt-4"><button onclick="fecharModal('modalEdit')" class="flex-1 py-3 rounded-lg font-bold bg-slate-700 text-slate-300">Cancelar</button><button onclick="salvarEdicaoItem()" class="flex-1 py-3 rounded-lg font-bold bg-brand-600 text-white">Confirmar</button></div></div></div>
+    <div id="modalWhats" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-slate-600 flex flex-col h-[80vh] shadow-2xl"><h3 class="font-bold text-lg mb-2 flex items-center gap-2 text-white"><i data-lucide="message-circle" class="text-green-500"></i> Texto para WhatsApp</h3><textarea id="txtWhatsPreview" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 mb-4 outline-none resize-none font-mono"></textarea><div class="flex gap-3"><button onclick="fecharModal('modalWhats')" class="py-3 px-6 rounded-lg font-bold bg-slate-700 text-slate-300">Voltar</button><button onclick="copiarTexto(true)" class="flex-1 py-3 rounded-lg font-bold bg-green-600 text-white flex justify-center items-center gap-2"><i data-lucide="copy"></i> Copiar e Abrir Whats</button></div></div></div>
+    
+    <div id="modalCliente" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-slate-600 shadow-2xl"><h3 class="font-bold text-lg mb-4 text-white flex items-center gap-2"><i data-lucide="user" class="text-brand-500"></i> Dados do Cliente</h3><input type="hidden" id="cliIdEdit"><label class="text-xs text-slate-400 block mb-1">Nome Completo</label><input type="text" id="cadCliNome" class="input-mobile mb-3"><label class="text-xs text-slate-400 block mb-1">Telefone / WhatsApp</label><input type="tel" id="cadCliTel" class="input-mobile mb-3" placeholder="(00) 00000-0000"><label class="text-xs text-slate-400 block mb-1">Endereço Completo</label><input type="text" id="cadCliEnd" class="input-mobile mb-3"><label class="text-xs text-slate-400 block mb-1">CPF</label><input type="text" id="cadCliCpf" class="input-mobile mb-3" oninput="mascaraDocumento(this)"><label class="text-xs text-slate-400 block mb-1">Data de Nascimento</label><input type="date" id="cadCliNasc" class="input-mobile mb-5 text-slate-300"><div class="flex gap-3"><button onclick="fecharModal('modalCliente')" class="flex-1 py-3 bg-slate-700 rounded-lg text-slate-300 font-bold">Cancelar</button><button onclick="salvarCliente()" class="flex-1 py-3 bg-brand-600 text-white rounded-lg font-bold">Salvar</button></div></div></div>
+    
+    <div id="modalNiver" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-amber-500 shadow-amber-900/50 shadow-2xl text-center"><div class="mx-auto bg-amber-500 w-16 h-16 rounded-full flex items-center justify-center mb-4"><i data-lucide="cake" class="w-8 h-8 text-white"></i></div><h3 class="font-bold text-xl text-white mb-2">Aniversariante do Dia!</h3><p id="txtModalNiver" class="text-slate-300 mb-6"></p><button onclick="document.getElementById('modalNiver').classList.add('hidden')" class="w-full py-3 bg-amber-500 text-white font-bold rounded-lg">Fechar e Parabenizar</button></div></div>
+    <div id="modalFerramentas" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-slate-600 shadow-2xl flex flex-col h-[80vh]"><h3 class="font-bold text-lg mb-4 text-white flex items-center gap-2"><i data-lucide="wrench" class="text-blue-400"></i> Gestão de Ativos</h3><div class="bg-slate-900 p-3 rounded mb-3 border border-slate-700"><input type="text" id="toolNome" placeholder="Nome (Ex: Parafusadeira)" class="input-mobile mb-2 h-10 text-sm"><div class="flex gap-2"><input type="text" id="toolValor" placeholder="Valor R$" class="input-mobile flex-1 h-10 text-sm" oninput="mascaraMoeda(this)"><input type="number" id="toolVida" placeholder="Meses" class="input-mobile w-20 h-10 text-sm"></div><button onclick="addTool()" class="w-full mt-2 bg-blue-600 py-2 rounded font-bold text-xs text-white">Adicionar</button></div><div class="flex justify-between text-xs text-slate-400 mb-2"><span>Total Investido: <b id="totalInvestido" class="text-white">R$ 0</b></span><span>Depreciação: <b id="totalDepreciacao" class="text-red-400">R$ 0/mês</b></span></div><div id="listaFerramentas" class="flex-1 overflow-y-auto space-y-2"></div><button onclick="fecharModal('modalFerramentas')" class="mt-3 w-full py-3 bg-slate-700 rounded-lg text-slate-300 font-bold">Fechar</button></div></div>
+    
+    <div id="modalRecibo" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-slate-600 shadow-2xl"><h3 class="font-bold text-lg mb-4 text-white">Gerar Recibo Avulso</h3><label class="text-xs text-slate-400 mb-1 block">Cliente</label><input type="text" id="recPagador" class="input-mobile mb-3" placeholder="Nome do Cliente"><label class="text-xs text-slate-400 mb-1 block">Valor</label><input type="text" id="recValor" class="input-mobile mb-3" oninput="mascaraMoeda(this)"><label class="text-xs text-slate-400 mb-1 block">Referente a</label><input type="text" id="recServico" class="input-mobile mb-5"><div class="flex gap-3"><button onclick="fecharModal('modalRecibo')" class="flex-1 py-3 bg-slate-700 rounded-lg text-slate-300 font-bold">Cancelar</button><button onclick="gerarReciboAvulsoPDF()" class="flex-1 py-3 bg-blue-600 text-white rounded-lg font-bold">Baixar PDF</button></div></div></div>
+    
+    <div id="modalMeusServicos" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-slate-800 rounded-xl p-5 w-full max-w-md border border-slate-600 shadow-2xl flex flex-col h-[80vh]"><h3 class="font-bold text-lg mb-4 text-white">Catálogo</h3><div class="flex gap-2 mb-4"><input type="text" id="novoServicoNome" placeholder="Nome Serviço" class="input-mobile text-sm"><button onclick="addNovoServicoCatalogo()" class="bg-brand-600 px-4 rounded-lg text-white font-bold"><i data-lucide="plus"></i></button></div><div id="listaMeusServicos" class="flex-1 overflow-y-auto space-y-2 pr-1"></div><button onclick="fecharModal('modalMeusServicos')" class="mt-4 w-full py-3 bg-slate-700 rounded-lg text-slate-300 font-bold">Fechar</button></div></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        // IMPORTADO sendPasswordResetEmail
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAb_TfH5v6LP_yXRD8vAeMWqtPgDbFJ3Qs",
+          authDomain: "montador-app-final.firebaseapp.com",
+          projectId: "montador-app-final",
+          storageBucket: "montador-app-final.firebasestorage.app",
+          messagingSenderId: "711254648820",
+          appId: "1:711254648820:web:cdf541c7c7dabae8113ba1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- MODO OFFLINE DESATIVADO PARA CORRIGIR ERRO DE TRAVAMENTO ---
+        /* enableIndexedDbPersistence(db).catch((err) => {
+            console.log('Persistencia offline desativada temporariamente.');
+        }); */
+        // ---------------------------------------------------------------
+
+        window.addEventListener('offline', () => document.getElementById('offlineIndicator').style.display = 'block');
+        window.addEventListener('online', () => document.getElementById('offlineIndicator').style.display = 'none');
+
+        let userIP = "Carregando...";
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userIP = data.ip;
+                const ipDisplay = document.getElementById('displayIP');
+                if(ipDisplay) ipDisplay.innerText = `IP Detectado: ${userIP}`;
+            })
+            .catch(() => {
+                if(document.getElementById('displayIP')) document.getElementById('displayIP').innerText = "IP: Oculto (VPN)";
+            });
+
+        // FUNÇÃO DE LOGIN ATUALIZADA (USA EMAIL DIRETO)
+        window.fazerLogin = async () => {
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+            if (!email || !senha) return alert("Preencha e-mail e senha!");
+            
+            try { 
+                await signInWithEmailAndPassword(auth, email, senha); 
+            } catch (error) { 
+                console.error(error);
+                document.getElementById('msgErro').classList.remove('hidden'); 
+                document.getElementById('msgErro').innerText = "Erro: Verifique e-mail e senha."; 
+            }
+        };
+
+        // FUNÇÃO DE REGISTRO ATUALIZADA COM O CÓDIGO VIPHOJE
+        window.registrarNovaConta = async () => {
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+            const codigoDigitado = document.getElementById('codigoConvite').value;
+            
+            if (codigoDigitado !== "montadorvip2026" && codigoDigitado !== "viphoje") {
+                 return alert("Código de convite inválido.");
+            }
+
+            if (!email || !senha) return alert("Preencha e-mail e senha!");
+            if (!email.includes('@')) return alert("Digite um e-mail válido!");
+
+            try { 
+                await createUserWithEmailAndPassword(auth, email, senha); 
+                alert("Conta criada! Bem-vindo."); 
+            } catch (error) { 
+                alert("Erro ao criar conta: " + error.message); 
+            }
+        };
+
+        // NOVA FUNÇÃO: RECUPERAR SENHA
+        window.recuperarSenha = async () => {
+            const email = document.getElementById('loginEmail').value;
+            if(!email) return alert("Por favor, digite seu E-MAIL no campo acima para recuperar a senha.");
+            
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("✅ E-mail de recuperação enviado!\nVerifique sua caixa de entrada (e spam).");
+            } catch (error) {
+                if(error.code === 'auth/user-not-found') alert("E-mail não cadastrado.");
+                else if(error.code === 'auth/invalid-email') alert("E-mail inválido.");
+                else alert("Erro: " + error.message);
+            }
+        }
+
+        let unsubscribe = null;
+        let salvando = false; // TRAVA DE SEGURANÇA ADICIONADA AQUI
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContent').style.display = 'block';
+                
+                // Se já houver uma escuta ativa, cancela para não duplicar
+                if (unsubscribe) unsubscribe();
+
+                // ESCUTA EM TEMPO REAL: Se mudar no PC, muda no Celular na hora
+                unsubscribe = onSnapshot(doc(db, "montadores", user.uid), (docSnap) => {
+                    // SÓ ATUALIZA SE NÃO ESTIVER SALVANDO
+                    if (docSnap.exists() && !salvando) {
+                        const dataNuvem = docSnap.data();
+                        // Mescla os dados da nuvem com o estado atual do app
+                        state = { ...state, ...dataNuvem };
+                        localStorage.setItem('app_lucrativo_v2_5', JSON.stringify(state));
+                        carregarEstadoVisual();
+                    } else if (!docSnap.exists() && !salvando) {
+                        carregarEstadoLocal();
+                    }
+                }, (error) => {
+                    console.error("Erro na sincronização:", error);
+                    carregarEstadoLocal();
+                });
+
+                lucide.createIcons(); 
+                renderPecasSelect(); 
+                renderPaymentOptions(); 
+                verificarBackupAutomatico();
+                if(document.getElementById('cliData') && !document.getElementById('cliData').value) {
+                    document.getElementById('cliData').value = new Date().toISOString().split('T')[0];
+                }
+                bindInputs();
+            } else {
+                if (unsubscribe) unsubscribe();
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appContent').style.display = 'none';
+            }
+        });
+
+        const catalogoBase = [{n: "Aéreo 1 Porta", t: 0.5}, {n: "Aéreo 2 Portas", t: 1.0}, {n: "Aéreo 3 Portas", t: 1.5}, {n: "Aparador", t: 1.5}, {n: "Armário Multiuso", t: 1.5}, {n: "Balcão Cozinha", t: 1.5}, {n: "Balcão Cooktop", t: 1.0}, {n: "Balcão Pia", t: 1.5}, {n: "Berço Americano", t: 2.0}, {n: "Berço Simples", t: 1.5}, {n: "Cadeira Gamer", t: 0.5}, {n: "Cadeira Jantar", t: 0.5}, {n: "Cama Box", t: 0.5}, {n: "Cama Casal", t: 1.5}, {n: "Cama Solteiro", t: 1.0}, {n: "Cômoda 4 Gavetas", t: 1.5}, {n: "Cômoda 6 Gavetas", t: 2.0}, {n: "Cozinha Completa M", t: 6.0}, {n: "Cozinha Completa P", t: 4.0}, {n: "Escrivaninha", t: 1.5}, {n: "Estante Livros", t: 2.0}, {n: "Guarda-Roupa 2p", t: 2.0}, {n: "Guarda-Roupa 3p Correr", t: 3.5}, {n: "Guarda-Roupa 4p", t: 3.0}, {n: "Guarda-Roupa 6p", t: 5.0}, {n: "Instalação TV", t: 0.5}, {n: "Mesa Jantar", t: 1.0}, {n: "Painel TV Ripado", t: 2.0}, {n: "Painel TV Simples", t: 1.0}, {n: "Rack", t: 1.5}, {n: "Roupeiro 3p Correr", t: 3.5}, {n: "Sofá Retrátil", t: 1.0}].sort((a,b) => a.n.localeCompare(b.n));
+        const pecasBase = ["Buchas 6mm", "Buchas 8mm", "Buchas Drywall", "Cabideiro", "Cantoneira Reforçada", "Corrediça Oculta", "Corrediça Telescópica", "Dispositivos Minifix", "Dobradiça 35mm", "MDF Branco (Pedaço)", "Parafuso 4x40", "Parafuso 3.5x14", "Puxador Alumínio", "Pé Regulável", "Roldana", "Kit Porta Correr", "Suporte TV Articulado", "Suporte TV Fixo", "Trilho Alumínio"].sort();
+        const formasPagamento = ["Pix", "Dinheiro", "Cartão Crédito"];
+        const copyBeneficiosDefault = `Com nosso serviço, você garante:\n✓ Montagem técnica e segura ✨\n✓ 90 dias de garantia total ✅\n✓ Pontualidade e limpeza no local 🤝\n✓ Ferramentas adequadas para não danificar o móvel 🛠️\nSua satisfação é nossa prioridade! ⭐`;
+
+        let state = { config: { nome: '', cnpj: '', insta: '', endereco: '', cidade: '', pix: '', logo: '', beneficios: copyBeneficiosDefault, regime: 'mei', imposto: 6, valorDas: 81.05, proLabore: 0, custosFixos: 0, metaLucro: 30, diasMes: 22, horasDia: 8, valorHora: 0, privacidade: false, reviewLink: '', backupInterval: 2, lastBackup: Date.now() }, meusServicos: [], ferramentas: [], clientes: [], despesas: [], receitasAvulsas: [], carrinho: [], pecasCarrinho: [], orcamento: { cliNome: '', cliCpf: '', cliCidade: '', cliData: '', validade: 7, deslocamento: 0, obsPag: '', obsGeral: '' }, historico: [], orcamentoIdAtual: null };
+        let editIndex = -1;
+        let currentViewDate = new Date();
+
+        function carregarEstadoLocal() { try { const salvo = localStorage.getItem('app_lucrativo_v2_5'); if (salvo) { const loaded = JSON.parse(salvo); state = { ...state, ...loaded, config: { ...state.config, ...loaded.config } }; } carregarEstadoVisual(); } catch(e) { console.error(e); } }
+
+        function carregarEstadoVisual() {
+            if(!state.config) state.config = {};
+            if(!state.orcamento) state.orcamento = {}; 
+            
+            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+            
+            setVal('confNome', state.config.nome); 
+            setVal('confCnpj', state.config.cnpj); 
+            setVal('confEndereco', state.config.endereco); 
+            setVal('confCidade', state.config.cidade); 
+            setVal('confInsta', state.config.insta);
+            setVal('confPix', state.config.pix); 
+            setVal('confReviewLink', state.config.reviewLink); 
+            setVal('confBeneficios', state.config.beneficios || copyBeneficiosDefault);
+            
+            setVal('obsPagamento', state.orcamento.obsPag);
+            
+            setVal('proLabore', formatMoneyStr(state.config.proLabore)); 
+            setVal('custosFixos', formatMoneyStr(state.config.custosFixos)); 
+            setVal('valorDas', formatMoneyStr(state.config.valorDas)); 
+            setVal('metaLucro', state.config.metaLucro); 
+            setVal('diasMes', state.config.diasMes); 
+            setVal('horasDia', state.config.horasDia); 
+            setVal('impostoSimples', state.config.imposto);
+
+            if(state.config.logo) { 
+                document.getElementById('imgPreview').src = state.config.logo; 
+                document.getElementById('imgPreview').classList.remove('hidden'); 
+                document.getElementById('logoPlaceholder').classList.add('hidden'); 
+                document.getElementById('btnRemoveLogo').classList.remove('hidden'); 
+            }
+            
+            setRegime(state.config.regime); 
+            renderPrivacidade(); 
+            calcular(); 
+            verificarAniversariantes(); 
+            atualizarInterface();
+        }
+
+        window.salvarTudo = async () => {
+            salvando = true; // ATIVA A TRAVA NO SALVAMENTO GERAL
+            state.config.nome = document.getElementById('confNome').value; 
+            state.config.cnpj = document.getElementById('confCnpj').value; 
+            state.config.endereco = document.getElementById('confEndereco').value; 
+            state.config.cidade = document.getElementById('confCidade').value; 
+            state.config.insta = document.getElementById('confInsta').value; 
+            state.config.pix = document.getElementById('confPix').value; 
+            state.config.beneficios = document.getElementById('confBeneficios').value; 
+            state.config.reviewLink = document.getElementById('confReviewLink').value;
+            
+            localStorage.setItem('app_lucrativo_v2_5', JSON.stringify(state));
+            const user = auth.currentUser; 
+            if (user) {
+                try { 
+                    const cleanState = JSON.parse(JSON.stringify(state)); 
+                    await setDoc(doc(db, "montadores", user.uid), cleanState); 
+                } catch (e) { console.error("Erro nuvem:", e); }
+            }
+            renderPainelMEI();
+            
+            // Libera a trava com pequena folga
+            setTimeout(() => { salvando = false; }, 1000); 
+        };
+
+        function renderPainelMEI() {
+            const LIMITE_MEI = 81000; const anoAtual = new Date().getFullYear(); document.getElementById('meiAno').innerText = anoAtual;
+            let faturamentoAtual = 0;
+            if(state.historico) state.historico.forEach(h => { if (h.status === 'pago') { const parts = h.data.split('/'); if(parts.length === 3 && parseInt(parts[2]) === anoAtual) faturamentoAtual += (h.valor || 0); } });
+            if(state.receitasAvulsas) state.receitasAvulsas.forEach(r => { if(new Date(r.data).getFullYear() === anoAtual) faturamentoAtual += (r.valor || 0); });
+            
+            document.getElementById('valorAnualMEI').innerText = formatMoney(faturamentoAtual);
+            const pct = Math.min((faturamentoAtual / LIMITE_MEI) * 100, 100);
+            document.getElementById('barraMEI').style.width = `${pct}%`;
+            document.getElementById('porcentagemMEI').innerText = `${pct.toFixed(1)}%`;
+            document.getElementById('restanteMEI').innerText = `Resta: ${formatMoney(LIMITE_MEI - faturamentoAtual)}`;
+            document.getElementById('barraMEI').className = pct > 90 ? 'bg-red-500 h-4 rounded-full transition-all' : 'bg-brand-500 h-4 rounded-full transition-all';
+        }
+
+        window.exportarRelatorioMEI = () => {
+            const ano = new Date().getFullYear(); const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.setFontSize(16); doc.text(`Relatório Anual MEI - ${ano}`, 15, 20);
+            const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+            const dadosMeses = Array(12).fill(0).map(() => ({fat: 0, desp: 0}));
+            if(state.historico) state.historico.forEach(h => { if(h.status === 'pago') { const parts = h.data.split('/'); if(parseInt(parts[2]) === ano) dadosMeses[parseInt(parts[1])-1].fat += h.valor; } });
+            if(state.receitasAvulsas) state.receitasAvulsas.forEach(r => { const d = new Date(r.data); if(d.getFullYear() === ano) dadosMeses[d.getMonth()].fat += r.valor; });
+            if(state.despesas) state.despesas.forEach(d => { const dateObj = new Date(d.data); if(dateObj.getFullYear() === ano) dadosMeses[dateObj.getMonth()].desp += d.val; });
+            const body = dadosMeses.map((m, i) => [meses[i], formatMoney(m.fat), formatMoney(m.desp), formatMoney(m.fat - m.desp)]);
+            doc.autoTable({ startY: 30, head: [['Mês', 'Faturamento (Pago)', 'Despesas', 'Saldo']], body: body });
+            const totalFat = dadosMeses.reduce((acc, m) => acc + m.fat, 0);
+            doc.text(`Total Anual Faturado: ${formatMoney(totalFat)}`, 15, doc.lastAutoTable.finalY + 10);
+            doc.save(`Relatorio_MEI_${ano}.pdf`);
+        };
+
+        window.fazerBackupHibrido = () => {
+            state.config.lastBackup = Date.now(); salvarTudo();
+            const dadosStr = JSON.stringify(state); const nomeArquivo = `backup_montador_${new Date().toISOString().slice(0,10)}.json`;
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([dadosStr], nomeArquivo, { type: "application/json" })] })) {
+                const file = new File([dadosStr], nomeArquivo, { type: "application/json" });
+                navigator.share({ title: 'Backup Montador', files: [file] }).catch(() => baixarArquivo(dadosStr, nomeArquivo));
+            } else {
+                alert("Em computadores, o arquivo será baixado. No celular, abrirá o compartilhamento.");
+                baixarArquivo(dadosStr, nomeArquivo);
+            }
+        };
+
+        function baixarArquivo(content, fileName) { const a = document.createElement("a"); const file = new Blob([content], { type: "application/json" }); a.href = URL.createObjectURL(file); a.download = fileName; a.click(); }
+        window.resetarApp = () => { if (confirm("ATENÇÃO: Isso apagará dados locais e desconectará. Tem certeza?")) { localStorage.clear(); signOut(auth).then(() => location.reload()); } };
+        
+        function importDados(input) {
+             const file = input.files[0]; if(!file) return; 
+             const reader = new FileReader(); 
+             reader.onload = (e) => { try { const backup = JSON.parse(e.target.result); state = { ...state, ...backup }; localStorage.setItem('app_lucrativo_v2_5', JSON.stringify(state)); alert("Backup restaurado! Recarregando..."); location.reload(); } catch(err){ alert("Erro ao ler backup."); } }; 
+             reader.readAsText(file); 
+        }
+        window.importarDados = importDados;
+
+        function bindInputs() { 
+            const inputs = ['cliNome', 'cliCidade', 'cliData', 'validadeDias', 'taxaDeslocamento', 'obsPagamento', 'obsGeral', 'confReviewLink', 'confInsta', 'cliCpf']; 
+            inputs.forEach(id => { 
+                const el = document.getElementById(id); 
+                if(el) el.addEventListener('input', (e) => { 
+                    const key = id === 'validadeDias' ? 'validade' : id === 'taxaDeslocamento' ? 'deslocamento' : id === 'obsPagamento' ? 'obsPag' : id === 'cliNome' ? 'cliNome' : id === 'cliCidade' ? 'cliCidade' : id === 'cliData' ? 'cliData' : id === 'confReviewLink' ? 'reviewLink' : id === 'confInsta' ? 'insta' : id === 'cliCpf' ? 'cliCpf' : 'obsGeral'; 
+                    if(id === 'taxaDeslocamento') state.orcamento[key] = parseMoney(e.target.value); 
+                    else if(id === 'validadeDias') state.orcamento[key] = parseFloat(e.target.value) || 0; 
+                    else if(id === 'confReviewLink') state.config.reviewLink = e.target.value; 
+                    else if(id === 'confInsta') state.config.insta = e.target.value; 
+                    else state.orcamento[key] = e.target.value; 
+                    if(id === 'taxaDeslocamento') renderCarrinho(); 
+                    salvarTudo(); 
+                }); 
+            }); 
+        }
+
+        function atualizarInterface() { renderFinanceiro(); renderHistorico(); renderClientes(); renderFerramentas(); if(state.carrinho.length > 0) renderCarrinho(); renderPainelMEI(); }
+        window.changeMonth = (delta) => { currentViewDate.setMonth(currentViewDate.getMonth() + delta); renderFinanceiro(); };
+
+        function renderFinanceiro() {
+            const pro = state.config.proLabore || 0; const fixo = state.config.custosFixos || 0; const das = state.config.regime === 'mei' ? (state.config.valorDas || 0) : 0; let dep = 0; if(state.ferramentas) state.ferramentas.forEach(f => { if(f.vida > 0) dep += f.valor/f.vida; });
+            const custoBase = pro + fixo + das + dep; const meta = custoBase * (1 + (state.config.metaLucro/100));
+            const viewMonth = currentViewDate.getMonth(); const viewYear = currentViewDate.getFullYear(); const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]; document.getElementById('displayMesAno').innerText = `${nomesMeses[viewMonth]} ${viewYear}`;
+
+            let faturado = 0;
+            if(state.historico) state.historico.forEach(h => { if(h.status === 'pago') { const parts = h.data.split('/'); let d; if(parts.length === 3) d = new Date(parts[2], parts[1]-1, parts[0]); else d = new Date(h.data); if(d.getMonth() === viewMonth && d.getFullYear() === viewYear) faturado += h.valor; } });
+            if(state.receitasAvulsas) state.receitasAvulsas.forEach(r => { const d = new Date(r.data); if(d.getMonth() === viewMonth && d.getFullYear() === viewYear) faturado += r.valor; });
+
+            let totalSaidas = 0;
+            if(state.despesas) state.despesas.forEach(d => { const dateObj = new Date(d.data); if(dateObj.getMonth() === viewMonth && dateObj.getFullYear() === viewYear) totalSaidas += d.val; });
+
+            document.getElementById('finEntradas').innerText = formatMoney(faturado); document.getElementById('finSaidas').innerText = formatMoney(totalSaidas);
+            const saldo = faturado - totalSaidas; const elSaldo = document.getElementById('finSaldo'); if(elSaldo) { elSaldo.innerText = formatMoney(saldo); elSaldo.className = saldo >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400"; }
+
+            const lRec = document.getElementById('listaReceitasAvulsas'); if(lRec) { lRec.innerHTML = ''; if(state.receitasAvulsas) state.receitasAvulsas.forEach((r, i) => { const d = new Date(r.data); if(d.getMonth() === viewMonth && d.getFullYear() === viewYear) { lRec.innerHTML += `<div class="flex justify-between items-center text-xs bg-slate-900 p-2 rounded mb-1"><span>${r.desc} <span class="text-slate-500 ml-1">(${d.getDate()}/${d.getMonth()+1})</span></span><div class="flex gap-2 font-bold text-emerald-400">${formatMoney(r.valor)} <button onclick="delReceitaAvulsa(${i})" class="text-red-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button></div></div>`; } }); }
+            const lDesp = document.getElementById('listaDespesas'); if(lDesp) { lDesp.innerHTML = ''; if(state.despesas) state.despesas.forEach(d => { const dateObj = new Date(d.data); if(dateObj.getMonth() === viewMonth && dateObj.getFullYear() === viewYear) { lDesp.innerHTML += `<div class="flex justify-between items-center text-xs bg-slate-900 p-2 rounded mb-1"><span>${d.desc} <span class="text-slate-500 ml-1">(${dateObj.getDate()}/${dateObj.getMonth()+1})</span></span><div class="flex gap-2 font-bold text-red-400">- ${formatMoney(d.val)} <button onclick="delDespesa(${d.id})" class="text-red-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button></div></div>`; } }); }
+
+            const pct = meta > 0 ? (faturado / meta) * 100 : 0; const finalPct = pct > 100 ? 100 : pct;
+            document.getElementById('barraProgresso').style.width = `${finalPct}%`; document.getElementById('txtMeta').innerText = `${pct.toFixed(0)}%`; document.getElementById('valorMetaAlvo').innerText = `Meta: ${formatMoney(meta)}`;
+            const bar = document.getElementById('barraProgresso'); if(pct >= 100) bar.className = "prog-bar bg-gradient-to-r from-emerald-400 to-emerald-300"; else if(pct > 50) bar.className = "prog-bar bg-gradient-to-r from-blue-500 to-blue-400"; else bar.className = "prog-bar bg-gradient-to-r from-amber-500 to-yellow-400";
+
+            const falta = meta - faturado; const elDias = document.getElementById('txtDiasRestantes');
+            if(falta <= 0) { elDias.innerText = "🚀 Meta Batida!"; elDias.className = "text-xs text-emerald-300 font-bold"; } else { const vHora = state.config.valorHora || 0; const hDia = state.config.horasDia || 8; const capDia = vHora * hDia; if(capDia > 0) elDias.innerText = `Faltam aprox. ${Math.ceil(falta / capDia)} dias de trabalho.`; else elDias.innerText = "Configure o valor hora."; }
+            lucide.createIcons();
+        }
+
+        window.renderHistorico = () => { const lista = document.getElementById('listaHistorico'); if(!lista) return; lista.innerHTML = ''; if (!state.historico || state.historico.length === 0) { lista.innerHTML = '<p class="text-slate-500 text-center mt-10">Histórico Vazio.</p>'; return; } state.historico.forEach(h => { const isPago = h.status === 'pago'; const statusColor = isPago ? 'text-green-400' : 'text-slate-400'; const btnColor = isPago ? 'bg-green-900/30 text-green-400 border-green-900' : 'bg-slate-900 text-slate-400 border-slate-700'; const item = document.createElement('div'); item.className = `bg-slate-800 p-4 rounded-xl border ${isPago ? 'border-green-800 shadow-green-900/20' : 'border-slate-700'} shadow flex flex-col gap-3`; item.innerHTML = `<div class="flex justify-between"><div><div class="font-bold text-white">${h.cliente}</div><div class="text-xs ${statusColor} font-bold tracking-wider">${h.status.toUpperCase()}</div><div class="text-[10px] text-slate-500">${h.data}</div></div><div class="font-bold text-brand-500 text-lg">${formatMoney(h.valor)}</div></div><div class="flex gap-2 pt-2 border-t border-slate-700"><button onclick="carregarDoHistorico(${h.id})" class="flex-1 py-3 bg-slate-700 rounded text-xs text-white font-bold hover:bg-slate-600">Abrir</button><button onclick="gerarReciboHistorico(${h.id})" class="px-3 bg-slate-600 rounded text-white flex items-center justify-center hover:bg-slate-500"><i data-lucide="receipt" class="w-4 h-4"></i></button><button onclick="agendarHistorico(${h.id})" class="px-3 bg-blue-900/40 text-blue-400 rounded flex items-center justify-center hover:bg-blue-900/60"><i data-lucide="calendar" class="w-4 h-4"></i></button><button onclick="pedirAvaliacao(${h.id})" class="px-3 bg-yellow-900/40 text-yellow-400 rounded flex items-center justify-center hover:bg-yellow-900/60"><i data-lucide="star" class="w-4 h-4"></i></button><button onclick="toggleStatus(${h.id})" class="flex-1 py-3 rounded text-xs font-bold border ${btnColor}">${isPago ? 'PAGO' : 'Marcar Pago'}</button><button onclick="deletarHistorico(${h.id})" class="px-3 bg-red-900/30 text-red-400 rounded hover:bg-red-900/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; lista.appendChild(item); }); lucide.createIcons(); };
+
+        function roundUp5(val) { if(val === 0) return 0; return Math.ceil(val / 5) * 5; }
+        function parseMoney(str) { if(!str) return 0; if(typeof str === 'number') return str; let clean = str.toString().replace(/[R$\s\.]/g, '').replace(',', '.'); return parseFloat(clean) || 0; }
+        function formatMoney(num) { return (num || 0).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}); }
+        function formatMoneyStr(num) { if(!num && num !== 0) return ''; return 'R$ ' + num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+        
+        window.mascaraMoeda = (i) => { let v = i.value.replace(/\D/g, ''); v = (v / 100).toFixed(2).replace('.', ','); i.value = 'R$ ' + v.replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
+        window.mascaraDocumento = (i) => { let v = i.value.replace(/\D/g, ""); if (v.length <= 11) { v = v.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2"); } else { v = v.replace(/^(\d{2})(\d)/, "$1.$2").replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3").replace(/\.(\d{3})(\d)/, ".$1/$2").replace(/(\d{4})(\d)/, "$1-$2"); } i.value = v; };
+
+        window.addDespesa = () => { const desc = document.getElementById('despesaDesc').value; const val = parseMoney(document.getElementById('despesaValor').value); if(!desc || val <= 0) return alert("Preencha descrição e valor!"); if(!state.despesas) state.despesas = []; state.despesas.push({ id: Date.now(), desc, val, data: new Date() }); document.getElementById('despesaDesc').value = ''; document.getElementById('despesaValor').value = ''; salvarTudo(); renderFinanceiro(); };
+        window.addReceitaAvulsa = () => { const val = parseMoney(document.getElementById('recAvulsaValor').value); const desc = document.getElementById('recAvulsaDesc').value; if(val <= 0 || !desc) return alert("Preencha descrição e valor!"); if(!state.receitasAvulsas) state.receitasAvulsas = []; state.receitasAvulsas.push({ valor: val, desc, data: new Date() }); document.getElementById('recAvulsaValor').value = ''; document.getElementById('recAvulsaDesc').value = ''; salvarTudo(); renderFinanceiro(); };
+        window.delDespesa = (id) => { if(confirm('Excluir?')) { state.despesas = state.despesas.filter(d => d.id !== id); salvarTudo(); renderFinanceiro(); } };
+        window.delReceitaAvulsa = (i) => { if(confirm('Excluir?')) { state.receitasAvulsas.splice(i, 1); salvarTudo(); renderFinanceiro(); } };
+
+        window.setRegime = (tipo) => { state.config.regime = tipo; const btnMei = document.getElementById('btnMei'); const btnSimples = document.getElementById('btnSimples'); const boxDas = document.getElementById('boxDas'); const boxSimples = document.getElementById('boxSimples'); if (tipo === 'mei') { btnMei.className = "flex-1 py-2 rounded-md text-sm font-bold bg-brand-600 text-white shadow"; btnSimples.className = "flex-1 py-2 rounded-md text-sm font-bold text-slate-400"; boxDas.classList.remove('hidden'); boxSimples.classList.add('hidden'); } else { btnSimples.className = "flex-1 py-2 rounded-md text-sm font-bold bg-brand-600 text-white shadow"; btnMei.className = "flex-1 py-2 rounded-md text-sm font-bold text-slate-400"; boxDas.classList.add('hidden'); boxSimples.classList.remove('hidden'); } calcular(); };
+
+        window.calcular = () => {
+            const pro = parseMoney(document.getElementById('proLabore').value); const fixo = parseMoney(document.getElementById('custosFixos').value); const lucro = parseFloat(document.getElementById('metaLucro').value) || 0; const dias = parseFloat(document.getElementById('diasMes').value) || 20; const horas = parseFloat(document.getElementById('horasDia').value) || 8; const valDas = state.config.regime === 'mei' ? parseMoney(document.getElementById('valorDas').value) : 0; const impostoSimples = state.config.regime === 'simples' ? (parseFloat(document.getElementById('impostoSimples').value) || 0) : 0;
+            let depMensal = 0; if(state.ferramentas) state.ferramentas.forEach(f => { if(f.vida > 0) depMensal += f.valor / f.vida; });
+            state.config.proLabore = pro; state.config.custosFixos = fixo; state.config.valorDas = valDas; state.config.metaLucro = lucro; state.config.diasMes = dias; state.config.horasDia = horas; state.config.imposto = impostoSimples;
+            const custoTotalMes = pro + fixo + valDas + depMensal; const horasMensais = dias * horas;
+            let custoHora = horasMensais > 0 ? custoTotalMes / horasMensais : 0; let valorComLucro = custoHora * (1 + (lucro / 100)); let valorFinalHora = valorComLucro;
+            if (state.config.regime === 'simples') { const divisor = 1 - (impostoSimples / 100); if(divisor > 0) valorFinalHora = valorComLucro / divisor; }
+            const valorDiaria = valorFinalHora * horas; document.getElementById('displayValorDiaria').innerText = formatMoney(valorDiaria); state.config.valorHora = valorFinalHora;
+            
+            // Calculo para Metas
+            const receitaNecessaria = valorFinalHora * horasMensais;
+            const lucroProjetado = receitaNecessaria - custoTotalMes - (state.config.regime === 'simples' ? (receitaNecessaria * impostoSimples/100) : 0);
+            document.getElementById('displayReceitaNecessaria').innerText = formatMoney(receitaNecessaria);
+            document.getElementById('displayLucroMensal').innerText = formatMoney(lucroProjetado);
+
+            renderPrivacidade(); renderFinanceiro(); salvarTudo(); renderCarrinho();
+        };
+
+        window.filtrarMoveis = () => { const termo = document.getElementById('buscaMovel').value.toLowerCase(); const lista = document.getElementById('listaSugestoes'); lista.innerHTML = ''; if (termo.length < 2) { lista.classList.add('hidden'); return; } let todos = [...catalogoBase]; if(state.meusServicos) state.meusServicos.forEach(s => todos.push({n: s, t: 0})); const termClean = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); todos.forEach(m => { const nomeMovel = m.n; const mClean = nomeMovel.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); if (mClean.includes(termClean)) { const div = document.createElement('div'); div.className = "p-3 border-b border-slate-700 hover:bg-slate-700 cursor-pointer text-sm font-medium flex justify-between"; div.innerHTML = `<span>${nomeMovel}</span><span class="text-xs text-slate-400 font-bold">${m.t > 0 ? m.t + 'h' : ''}</span>`; div.onclick = () => { adicionarAoCarrinho(nomeMovel, m.t); document.getElementById('buscaMovel').value = ''; lista.classList.add('hidden'); }; lista.appendChild(div); } }); lista.classList.remove('hidden'); };
+        
+        window.promptBuscaManual = () => {
+            const termo = prompt("Qual o modelo/marca do móvel?");
+            if(!termo) return;
+            window.open(`https://www.google.com/search?q=Manual Montagem ${encodeURIComponent(termo)} filetype:pdf`, '_blank');
+        };
+
+        function adicionarAoCarrinho(nome, tempo) { if (!state.carrinho) state.carrinho = []; state.carrinho.push({ nome, tempo, qtd: 1, extra: 0 }); renderCarrinho(); setTimeout(() => editarItem(state.carrinho.length - 1), 100); }
+        window.adicionarManual = () => { adicionarAoCarrinho("Serviço Avulso", 0); };
+        
+        window.renderCarrinho = () => {
+            const contServ = document.getElementById('carrinho'); contServ.innerHTML = ''; let totalServicos = 0; if(!state.carrinho) state.carrinho = [];
+            state.carrinho.forEach((item, index) => { const rawUnit = (item.tempo * (state.config.valorHora || 0)) + item.extra; const unitRounded = roundUp5(rawUnit); const totalItem = unitRounded * item.qtd; totalServicos += totalItem; const card = document.createElement('div'); card.className = "bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center shadow-sm"; card.innerHTML = `<div class="flex-1 cursor-pointer" onclick="editarItem(${index})"><div class="font-bold text-sm text-white">${item.nome}</div><div class="text-xs text-slate-400">${item.tempo}h ${item.extra > 0 ? '+ R$'+item.extra : ''}</div></div><div class="flex items-center gap-3"><button onclick="alterarQtd(${index}, -1)" class="w-8 h-8 bg-slate-900 rounded text-slate-400 font-bold flex items-center justify-center">-</button><span class="text-sm font-bold w-4 text-center">${item.qtd}</span><button onclick="alterarQtd(${index}, 1)" class="w-8 h-8 bg-brand-900 rounded text-brand-400 font-bold flex items-center justify-center">+</button></div><div class="font-bold text-brand-400 text-sm w-20 text-right">${formatMoney(totalItem)}</div>`; contServ.appendChild(card); });
+            const contPecas = document.getElementById('listaPecasCarrinho'); contPecas.innerHTML = ''; let totalPecas = 0; if(!state.pecasCarrinho) state.pecasCarrinho = [];
+            state.pecasCarrinho.forEach((p, idx) => { const rawTotal = p.valor * p.qtd; const finalTotal = roundUp5(rawTotal); totalPecas += finalTotal; const row = document.createElement('div'); row.className = "flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-700 text-sm"; row.innerHTML = `<div class="flex-1">${p.nome} <span class="text-xs text-slate-400">(${p.qtd}x ${formatMoney(p.valor)})</span></div><div class="font-bold text-blue-400 mr-2">${formatMoney(finalTotal)}</div><button onclick="removerPeca(${idx})" class="text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`; contPecas.appendChild(row); });
+            const deslocamento = state.orcamento.deslocamento || parseMoney(document.getElementById('taxaDeslocamento').value);
+            let totalBruto = totalServicos + totalPecas + deslocamento;
+            document.getElementById('totalDisplay').innerText = formatMoney(totalBruto).replace(',00', '');
+            lucide.createIcons();
+            return { totalServicos, totalPecas, deslocamento, totalFinal: totalBruto };
+        };
+
+        window.editarItem = (index) => { editIndex = index; const item = state.carrinho[index]; document.getElementById('editNome').value = item.nome; document.getElementById('editTempo').value = item.tempo; document.getElementById('editExtra').value = formatMoneyStr(item.extra); document.getElementById('modalEdit').classList.remove('hidden'); };
+        window.salvarEdicaoItem = () => { if (editIndex === -1) return; const nome = document.getElementById('editNome').value; const tempo = parseFloat(document.getElementById('editTempo').value) || 0; const extra = parseMoney(document.getElementById('editExtra').value); state.carrinho[editIndex] = { ...state.carrinho[editIndex], nome, tempo, extra }; renderCarrinho(); fecharModal('modalEdit'); };
+        window.alterarQtd = (index, delta) => { if(!state.carrinho[index]) return; const nova = state.carrinho[index].qtd + delta; if(nova <= 0) { if(confirm("Remover item?")) state.carrinho.splice(index, 1); } else { state.carrinho[index].qtd = nova; } renderCarrinho(); };
+        window.novoOrcamento = () => { if(confirm("Limpar tela?")) { state.carrinho = []; state.pecasCarrinho = []; state.orcamento = { cliNome: '', cliCpf: '', cliCidade: state.config.cidade || '', cliData: new Date().toISOString().split('T')[0], validade: 7, deslocamento: 0, obsPag: '', obsGeral: '' }; state.orcamentoIdAtual = null; document.getElementById('cliNome').value = ''; document.getElementById('cliCpf').value = ''; document.getElementById('cliCidade').value = state.config.cidade || ''; document.getElementById('taxaDeslocamento').value = ''; document.getElementById('obsGeral').value = ''; document.getElementById('obsPagamento').value = ''; renderCarrinho(); salvarTudo(); } };
+
+        window.salvarHistoricoManual = async () => {
+            try {
+                if(state.carrinho.length === 0 && state.pecasCarrinho.length === 0) return alert("Orçamento vazio!");
+                
+                salvando = true; // ATIVA A TRAVA DE SEGURANÇA
+
+                // Preparar dados
+                state.orcamento.cliNome = document.getElementById('cliNome').value || 'Cliente Sem Nome';
+                state.orcamento.cliCidade = document.getElementById('cliCidade').value || '';
+                state.orcamento.cliData = document.getElementById('cliData').value || new Date().toISOString().split('T')[0];
+                state.orcamento.validade = parseFloat(document.getElementById('validadeDias').value) || 7;
+                state.orcamento.deslocamento = parseMoney(document.getElementById('taxaDeslocamento').value);
+                state.orcamento.obsPag = document.getElementById('obsPagamento').value || '';
+                state.orcamento.obsGeral = document.getElementById('obsGeral').value || '';
+                
+                const calc = renderCarrinho();
+                const novoItem = { 
+                    id: state.orcamentoIdAtual || Date.now(), 
+                    cliente: state.orcamento.cliNome, 
+                    valor: calc.totalFinal, 
+                    data: new Date(state.orcamento.cliData).toLocaleDateString('pt-BR'), 
+                    status: 'pendente', 
+                    detalhes: { 
+                        carrinho: JSON.parse(JSON.stringify(state.carrinho)), 
+                        pecasCarrinho: JSON.parse(JSON.stringify(state.pecasCarrinho)), 
+                        orcamento: JSON.parse(JSON.stringify(state.orcamento)) 
+                    } 
+                };
+
+                const user = auth.currentUser;
+                if (!user) {
+                    salvando = false;
+                    return alert("Erro: Você não está logado!");
+                }
+
+                // LÓGICA DE SALVAMENTO SEGURA (COM TRAVA)
+                if(state.orcamentoIdAtual) { 
+                    // MODO EDIÇÃO
+                    const idx = state.historico.findIndex(h => h.id === state.orcamentoIdAtual); 
+                    if(idx !== -1) state.historico[idx] = novoItem; 
+                    await salvarTudo(); // SalvarTudo já gerencia a trava
+                } else { 
+                    // MODO NOVO: Usa arrayUnion para ADICIONAR SEM APAGAR O RESTO
+                    
+                    // 1. Atualiza visualmente agora (para o usuário ver na hora)
+                    if(!state.historico) state.historico = [];
+                    state.historico.unshift(novoItem);
+                    
+                    // 2. Manda para o banco de forma segura
+                    const userRef = doc(db, "montadores", user.uid);
+                    await setDoc(userRef, {
+                        historico: arrayUnion(novoItem)
+                    }, { merge: true });
+                    
+                    // Atualiza o backup local também
+                    localStorage.setItem('app_lucrativo_v2_5', JSON.stringify(state));
+                }
+
+                renderHistorico(); 
+                renderFinanceiro(); 
+                alert("✅ Orçamento salvo com segurança!");
+                
+            } catch (error) { 
+                console.error(error);
+                alert("Erro ao salvar: " + error.message); 
+            } finally {
+                // Libera a trava com pequena folga
+                setTimeout(() => { salvando = false; }, 1000);
+            }
+        };
+
+        window.toggleStatus = (id) => { const item = state.historico.find(h => h.id === id); if(item) { item.status = item.status === 'pago' ? 'pendente' : 'pago'; salvarTudo(); renderHistorico(); renderFinanceiro(); } };
+        window.deletarHistorico = (id) => { if(confirm("Apagar permanentemente?")) { state.historico = state.historico.filter(h => h.id !== id); salvarTudo(); renderHistorico(); renderFinanceiro(); } };
+        window.carregarDoHistorico = (id) => { const h = state.historico.find(i => i.id === id); if(!h) return; if(!confirm(`Carregar orçamento de ${h.cliente}? A tela atual será substituída.`)) return; state.carrinho = JSON.parse(JSON.stringify(h.detalhes.carrinho || [])); state.pecasCarrinho = JSON.parse(JSON.stringify(h.detalhes.pecasCarrinho || [])); state.orcamento = JSON.parse(JSON.stringify(h.detalhes.orcamento || {})); state.orcamentoIdAtual = h.id; document.getElementById('cliNome').value = state.orcamento.cliNome || ''; document.getElementById('cliCpf').value = state.orcamento.cliCpf || ''; document.getElementById('cliCidade').value = state.orcamento.cliCidade || ''; document.getElementById('cliData').value = state.orcamento.cliData || ''; document.getElementById('taxaDeslocamento').value = formatMoneyStr(state.orcamento.deslocamento); document.getElementById('obsGeral').value = state.orcamento.obsGeral || ''; document.getElementById('obsPagamento').value = state.orcamento.obsPag || ''; switchTab('calc'); renderCarrinho(); };
+
+        window.modalEditCliente = (id) => { document.getElementById('cliIdEdit').value = id || ''; if(id) { const c = state.clientes.find(x => x.id === id); document.getElementById('cadCliNome').value = c.nome; document.getElementById('cadCliTel').value = c.tel; document.getElementById('cadCliEnd').value = c.end; document.getElementById('cadCliNasc').value = c.nasc; document.getElementById('cadCliCpf').value = c.cpf || ''; } else { document.getElementById('cadCliNome').value = ''; document.getElementById('cadCliTel').value = ''; document.getElementById('cadCliEnd').value = ''; document.getElementById('cadCliNasc').value = ''; document.getElementById('cadCliCpf').value = ''; } document.getElementById('modalCliente').classList.remove('hidden'); };
+        window.salvarCliente = () => { const id = document.getElementById('cliIdEdit').value; const nome = document.getElementById('cadCliNome').value; const tel = document.getElementById('cadCliTel').value; const end = document.getElementById('cadCliEnd').value; const nasc = document.getElementById('cadCliNasc').value; const cpf = document.getElementById('cadCliCpf').value; if(!nome) return alert("Nome obrigatório"); if(!state.clientes) state.clientes = []; if(id) { const idx = state.clientes.findIndex(x => x.id == id); if(idx >= 0) state.clientes[idx] = { id: parseInt(id), nome, tel, end, nasc, cpf }; } else { state.clientes.unshift({ id: Date.now(), nome, tel, end, nasc, cpf }); } salvarTudo(); renderClientes(); verificarAniversariantes(); fecharModal('modalCliente'); };
+        window.excluirCliente = (id) => { if(confirm("Excluir cliente?")) { state.clientes = state.clientes.filter(x => x.id !== id); salvarTudo(); renderClientes(); } };
+        window.filtrarClientes = () => { renderClientes(); };
+        window.renderClientes = () => { const termo = document.getElementById('buscaCliente').value.toLowerCase(); const lista = document.getElementById('listaClientes'); if(!lista) return; lista.innerHTML = ''; if(!state.clientes) state.clientes = []; const filtrados = state.clientes.filter(c => c.nome.toLowerCase().includes(termo)); if(filtrados.length === 0) lista.innerHTML = '<div class="text-center text-slate-500 text-sm py-4">Nenhum cliente.</div>'; filtrados.forEach(c => { let isNiver = false; if(c.nasc) { const hoje = new Date(); const dNasc = new Date(c.nasc + 'T12:00:00'); if(hoje.getDate() === dNasc.getDate() && hoje.getMonth() === dNasc.getMonth()) isNiver = true; } const div = document.createElement('div'); div.className = `bg-slate-800 p-4 rounded-xl border ${isNiver ? 'border-amber-500 shadow-amber-900/50 shadow-lg' : 'border-slate-700'} flex justify-between items-center`; div.innerHTML = `<div><div class="font-bold text-white flex items-center gap-2">${c.nome} ${isNiver ? '🎂' : ''}</div><div class="text-xs text-slate-400">${c.tel || '-'}</div><div class="text-[10px] text-slate-500 truncate max-w-[200px]">${c.end || ''}</div></div><div class="flex gap-2"><button onclick="abrirWhatsCliente('${c.tel}')" class="p-2 bg-green-600 rounded text-white"><i data-lucide="phone" class="w-4 h-4"></i></button><button onclick="modalEditCliente(${c.id})" class="p-2 bg-slate-700 rounded text-blue-400"><i data-lucide="edit-2" class="w-4 h-4"></i></button><button onclick="excluirCliente(${c.id})" class="p-2 bg-slate-700 rounded text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; lista.appendChild(div); }); lucide.createIcons(); };
+        window.verificarAniversariantes = () => { if(!state.clientes) return; const hoje = new Date(); const aniversariantes = state.clientes.filter(c => { if(!c.nasc) return false; const d = new Date(c.nasc + 'T12:00:00'); return d.getDate() === hoje.getDate() && d.getMonth() === hoje.getMonth(); }); if(aniversariantes.length > 0) { document.getElementById('txtAniversariantes').innerText = aniversariantes.map(c => c.nome).join(', '); document.getElementById('aniversariantesArea').classList.remove('hidden'); } else { document.getElementById('aniversariantesArea').classList.add('hidden'); } };
+
+        window.abrirModalTexto = () => { const calc = renderCarrinho(); const cliInput = document.getElementById('cliNome').value || 'Cliente Final'; const total = formatMoney(calc.totalFinal).replace(',00', ''); const obs = document.getElementById('obsGeral').value; let pagamentos = ""; const checks = document.querySelectorAll('input[name="pgto"]:checked'); if(checks.length > 0) pagamentos = Array.from(checks).map(el => el.value).join(', '); const obsPag = document.getElementById('obsPagamento').value; let txt = `Olá! Segue seu orçamento:\n`; if(cliInput && cliInput !== 'Cliente Final') txt += `Cliente: ${cliInput}\n\n`; txt += document.getElementById('confBeneficios').value + "\n\n"; if(state.carrinho.length > 0) { txt += `*🛠️ SERVIÇOS:*\n`; state.carrinho.forEach(i => { const raw = (i.tempo * (state.config.valorHora || 0)) + i.extra; const itemTot = roundUp5(raw) * i.qtd; txt += `▪ ${i.qtd}x ${i.nome}: R$ ${formatMoney(itemTot)}\n`; }); } if(state.pecasCarrinho && state.pecasCarrinho.length > 0) { txt += `\n*📦 MATERIAIS:*\n`; state.pecasCarrinho.forEach(p => { const totalPart = roundUp5(p.valor * p.qtd); txt += `▪ ${p.qtd}x ${p.nome}: R$ ${formatMoney(totalPart)}\n`; }); } if(calc.deslocamento > 0) txt += `\n+ Taxa Deslocamento: ${formatMoney(calc.deslocamento)}\n`; txt += `\n*✅ TOTAL: ${total}*\n`; if(pagamentos) txt += `Formas de Pagamento: ${pagamentos} ${obsPag ? '('+obsPag+')' : ''}\n`; if(obs) txt += `📝 Obs: ${obs}\n`; txt += `\nFico no aguardo! 🤝`; document.getElementById('txtWhatsPreview').value = txt; document.getElementById('modalWhats').classList.remove('hidden'); };
+
+        window.gerarPDF = () => {
+            const { jsPDF } = window.jspdf; const doc = new jsPDF(); const calc = renderCarrinho(); const colBrand = [16, 185, 129];
+            const pagamentos = Array.from(document.querySelectorAll('input[name="pgto"]:checked')).map(el => el.value).join(', ');
+            const obsPag = document.getElementById('obsPagamento').value; const obsGeral = document.getElementById('obsGeral').value;
+            const nomeCli = document.getElementById('cliNome').value || 'Cliente Final'; const dataOrc = document.getElementById('cliData').value.split('-').reverse().join('/');
+            const nomePrestador = document.getElementById('confNome').value || "Prestador"; const cnpjPrestador = document.getElementById('confCnpj').value || ""; const endPrestador = document.getElementById('confEndereco').value || ""; const cityPrestador = document.getElementById('confCidade').value || ""; const instaPrestador = document.getElementById('confInsta').value || "";
+            const chavePix = document.getElementById('confPix').value;
+
+            let y = 15; if(state.config.logo) { try { var imgProps = doc.getImageProperties(state.config.logo); var width = 30; var height = (imgProps.height * width) / imgProps.width; doc.addImage(state.config.logo, 'JPEG', 15, 10, width, height); } catch(e){ console.log("Erro imagem PDF"); } } else { doc.setFontSize(18); doc.setTextColor(...colBrand); doc.setFont("helvetica", "bold"); doc.text(nomePrestador, 15, 20); }
+            doc.setFontSize(12); doc.setTextColor(30); doc.text(nomePrestador, 195, 15, {align:'right'}); doc.setFontSize(9); doc.setTextColor(80); if(cnpjPrestador) { doc.text(cnpjPrestador, 195, 20, {align:'right'}); } if(endPrestador) { doc.text(endPrestador, 195, 24, {align:'right'}); } if(cityPrestador) { doc.text(cityPrestador, 195, 28, {align:'right'}); }
+            y = 45; doc.setDrawColor(200); doc.line(15, y, 195, y); y += 10;
+            
+            doc.setFontSize(16); doc.setTextColor(...colBrand); doc.setFont("helvetica", "bold");
+            doc.text("PROPOSTA DE PRESTAÇÃO DE SERVIÇO", 105, y, {align:'center'}); 
+            
+            y += 10; doc.setFontSize(10); doc.setTextColor(30);
+            doc.setFont("helvetica", "bold"); doc.text("Cliente:", 15, y); doc.setFont("helvetica", "normal"); doc.text(nomeCli, 35, y); const cliCidade = document.getElementById('cliCidade').value; if(cliCidade) { doc.setFont("helvetica", "bold"); doc.text("Local:", 15, y+5); doc.setFont("helvetica", "normal"); doc.text(cliCidade, 35, y+5); } doc.setFont("helvetica", "bold"); doc.text("Data:", 140, y); doc.setFont("helvetica", "normal"); doc.text(dataOrc, 155, y); y += 15;
+            
+            const bodyServ = state.carrinho.map(i => { const raw = (i.tempo * (state.config.valorHora || 0)) + i.extra; const tot = roundUp5(raw) * i.qtd; return [i.nome, i.qtd, formatMoney(tot)]; }); 
+            if(bodyServ.length > 0) { 
+                doc.autoTable({ 
+                    startY: y, 
+                    head: [['SERVIÇO/MONTAGEM', 'QTD', 'VALOR']], 
+                    body: bodyServ, 
+                    theme: 'striped', 
+                    headStyles: { fillColor: colBrand, halign: 'center' }, 
+                    columnStyles: { 1: { halign: 'center' }, 2: { halign: 'right' } } 
+                }); 
+                y = doc.lastAutoTable.finalY + 10; 
+            }
+            
+            const bodyPecas = (state.pecasCarrinho || []).map(p => { const finalPart = roundUp5(p.valor * p.qtd); return [p.nome, p.qtd, formatMoney(finalPart)]; }); 
+            if(bodyPecas.length > 0) { 
+                doc.autoTable({ 
+                    startY: y, 
+                    head: [['MATERIAL', 'QTD', 'VALOR']], 
+                    body: bodyPecas, 
+                    theme: 'striped',
+                    headStyles: { fillColor: [100, 100, 100], halign: 'center' },
+                    columnStyles: { 1: { halign: 'center' }, 2: { halign: 'right' } }
+                }); 
+                y = doc.lastAutoTable.finalY + 10; 
+            }
+
+            if (calc.deslocamento > 0) {
+                doc.setFontSize(10);
+                doc.setTextColor(30);
+                doc.text("Taxa de Deslocamento: " + formatMoney(calc.deslocamento), 195, y, {align: 'right'});
+                y += 7;
+            }
+            
+            doc.setFillColor(...colBrand); doc.rect(120, y, 75, 10, 'F'); doc.setTextColor(255); doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text(`TOTAL: ${formatMoney(calc.totalFinal)}`, 190, y+7, {align:'right'}); y += 15; doc.setTextColor(30); doc.setFontSize(10); 
+            
+            if(pagamentos) { 
+                doc.text(`Formas de Pagamento: ${pagamentos} ${obsPag ? '('+obsPag+')' : ''}`, 15, y); 
+                y+=7; 
+            } 
+            
+            if(chavePix) {
+                doc.setTextColor(16, 185, 129);
+                doc.setFont("helvetica", "bold");
+                doc.text(`Chave PIX: ${chavePix}`, 15, y);
+                y += 7;
+                doc.setTextColor(30);
+                doc.setFont("helvetica", "normal");
+            }
+
+            if(obsGeral) { const splitObs = doc.splitTextToSize("Obs: " + obsGeral, 180); doc.text(splitObs, 15, y); y+=5; } y += 5; const benef = document.getElementById('confBeneficios').value; const benefClean = benef.replace(/[^\x20-\x7E\u00A0-\u00FF\n\r]/g, ''); const splitBenef = doc.splitTextToSize(benefClean, 180); doc.setTextColor(60); doc.text(splitBenef, 15, y); y += (splitBenef.length * 5) + 5; if(instaPrestador) { doc.setTextColor(16, 185, 129); doc.textWithLink(`Acompanhe meu trabalho no Instagram: @${instaPrestador}`, 15, y, {url: `https://instagram.com/${instaPrestador.replace('@','')}`}); } doc.save(`Proposta_${nomeCli}.pdf`);
+        };
+
+        window.gerarTermoGarantia = () => {
+            if(state.carrinho.length === 0) return alert("Adicione serviços ao orçamento primeiro.");
+            
+            const { jsPDF } = window.jspdf; 
+            const doc = new jsPDF(); 
+            const colBrand = [16, 185, 129];
+            
+            const nomeCli = document.getElementById('cliNome').value || 'Cliente';
+            const cidade = document.getElementById('cliCidade').value || 'Cidade';
+            const dataServico = document.getElementById('cliData').value.split('-').reverse().join('/');
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            const nomePrestador = document.getElementById('confNome').value || "Prestador";
+            const cnpjPrestador = document.getElementById('confCnpj').value || "";
+            const instaPrestador = document.getElementById('confInsta').value || "";
+
+            let y = 15; 
+            if(state.config.logo) { 
+                try { 
+                    var imgProps = doc.getImageProperties(state.config.logo); 
+                    var width = 30; 
+                    var height = (imgProps.height * width) / imgProps.width; 
+                    doc.addImage(state.config.logo, 'JPEG', 15, 10, width, height); 
+                } catch(e){ console.log("Erro imagem PDF"); } 
+            } else { 
+                doc.setFontSize(18); doc.setTextColor(...colBrand); doc.setFont("helvetica", "bold"); doc.text(nomePrestador, 15, 20); 
+            }
+            doc.setFontSize(12); doc.setTextColor(30); doc.text(nomePrestador, 195, 15, {align:'right'}); 
+            doc.setFontSize(9); doc.setTextColor(80); 
+            if(cnpjPrestador) doc.text(cnpjPrestador, 195, 20, {align:'right'});
+            if(instaPrestador) doc.text(`@${instaPrestador}`, 195, 24, {align:'right'});
+
+            y = 40; doc.setDrawColor(200); doc.line(15, y, 195, y); y += 15;
+
+            doc.setFontSize(18); doc.setTextColor(...colBrand); doc.setFont("helvetica", "bold");
+            doc.text("TERMO DE GARANTIA DE SERVIÇO", 105, y, {align:'center'}); 
+            y += 15;
+
+            doc.setFontSize(11); doc.setTextColor(30); doc.setFont("helvetica", "normal");
+            
+            const textoIntro = `Certificamos que o serviço de montagem realizado para o cliente ${nomeCli.toUpperCase()} possui garantia técnica de 90 (noventa) dias, a contar da data de realização do serviço ${dataServico}, conforme previsto no Código de Defesa do Consumidor.`;
+            const splitIntro = doc.splitTextToSize(textoIntro, 170);
+            doc.text(splitIntro, 20, y);
+            y += (splitIntro.length * 7) + 5;
+
+            doc.setFont("helvetica", "bold"); doc.text("Itens Montados:", 20, y); y += 7;
+            doc.setFont("helvetica", "normal");
+            state.carrinho.forEach(item => {
+                doc.text(`• ${item.nome}`, 25, y);
+                y += 6;
+            });
+            y += 5;
+
+            doc.setFont("helvetica", "bold"); doc.setTextColor(...colBrand); doc.text("O QUE ESTA GARANTIA COBRE:", 20, y); y += 7;
+            doc.setFont("helvetica", "normal"); doc.setTextColor(30);
+            const cobre = [
+                "Falhas na execução da montagem (ex: portas desalinhadas por falta de regulagem, peças soltas).",
+                "Danos causados diretamente pelo montador durante a execução do serviço."
+            ];
+            cobre.forEach(t => {
+                const lines = doc.splitTextToSize(`- ${t}`, 170);
+                doc.text(lines, 20, y);
+                y += (lines.length * 6);
+            });
+            y += 5;
+
+            doc.setFont("helvetica", "bold"); doc.setTextColor(200, 50, 50); doc.text("O QUE ESTA GARANTIA NÃO COBRE:", 20, y); y += 7;
+            doc.setFont("helvetica", "normal"); doc.setTextColor(30);
+            const naoCobre = [
+                "Defeitos de fabricação do móvel, peças empenadas ou falta de ferragens na embalagem original.",
+                "Danos causados por mau uso, umidade, infiltrações ou uso de produtos de limpeza inadequados.",
+                "Desalinhamentos futuros causados por piso irregular ou sobrecarga de peso.",
+                "Danos causados se o móvel for arrastado, mudado de lugar ou desmontado por terceiros."
+            ];
+            naoCobre.forEach(t => {
+                const lines = doc.splitTextToSize(`- ${t}`, 170);
+                doc.text(lines, 20, y);
+                y += (lines.length * 6);
+            });
+
+            y += 20;
+            if (y > 260) { doc.addPage(); y = 40; } 
+            
+            doc.setFont("helvetica", "normal");
+            doc.text(`Local e Data: ${cidade}, ${hoje}`, 105, y, {align:'center'});
+            y += 20;
+            
+            doc.line(60, y, 150, y);
+            doc.setFont("helvetica", "bold");
+            doc.text(`${nomePrestador}`, 105, y+6, {align:'center'});
+            doc.setFontSize(10); doc.setFont("helvetica", "normal");
+            doc.text("Montador Profissional", 105, y+11, {align:'center'});
+
+            doc.save(`Termo_Garantia_${nomeCli}.pdf`);
+        };
+
+        window.modalFerramentas = () => { renderFerramentas(); document.getElementById('modalFerramentas').classList.remove('hidden'); };
+        window.modalMeusServicos = () => { renderListaMeusServicos(); document.getElementById('modalMeusServicos').classList.remove('hidden'); };
+        window.renderListaMeusServicos = () => { const l = document.getElementById('listaMeusServicos'); l.innerHTML = ''; (state.meusServicos || []).forEach((s, i) => l.innerHTML += `<div class="flex justify-between items-center bg-slate-900 p-3 rounded border border-slate-700"><span class="text-sm font-bold text-white">${s}</span><button onclick="removeServicoCatalogo(${i})" class="text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`); lucide.createIcons(); };
+        window.addNovoServicoCatalogo = () => { const n = document.getElementById('novoServicoNome').value; if(!n) return; if(!state.meusServicos) state.meusServicos = []; state.meusServicos.push(n); document.getElementById('novoServicoNome').value = ''; renderListaMeusServicos(); salvarTudo(); };
+        window.removeServicoCatalogo = (i) => { state.meusServicos.splice(i, 1); renderListaMeusServicos(); salvarTudo(); };
+        window.fecharModal = (id) => { document.getElementById(id).classList.add('hidden'); editIndex = -1; };
+        
+        window.copyingDoModal = () => { copiarTexto(false); };
+        
+        window.copiarTexto = (abrir) => { 
+            const txt = document.getElementById('txtWhatsPreview').value; 
+            navigator.clipboard.writeText(txt).then(() => { 
+                if(abrir) {
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`, '_blank'); 
+                }
+                else alert("Copiado!"); 
+                fecharModal('modalWhats'); 
+            }); 
+        };
+        
+        window.pedirAvaliacao = (id) => { const h = state.historico.find(i => i.id === id); const link = state.config.reviewLink; if(!link) return alert("Configure seu Link de Avaliação em Ajustes!"); const msg = `Agradeço por contratar meus serviços. 🛠️🧰\nEspero que tenha atingido sua expectativa😃.\n\nAvalie meu trabalho no ⬇️ Google\n⭐⭐⭐⭐⭐\n\nSe possível, deixe também um breve depoimento e uma foto sobre o serviço realizado\n\nLink: ${link}`; document.getElementById('txtWhatsPreview').value = msg; document.getElementById('modalWhats').classList.remove('hidden'); };
+        window.verificarBackupAutomatico = () => { const dias = parseInt(state.config.backupInterval || 2); if(dias === 999) return; const ult = state.config.lastBackup || 0; if((Date.now() - ult) / (86400000) > dias) { if(confirm(`⚠️ Backup Pendente!\nFaz mais de ${dias} dias. Fazer backup agora?`)) window.fazerBackupHibrido(); } };
+        window.renderPecasSelect = () => { const sel = document.getElementById('selPecas'); pecasBase.forEach(p => { const opt = document.createElement('option'); opt.value = p; opt.innerText = p; sel.appendChild(opt); }); };
+        window.addPeca = () => { const nome = document.getElementById('selPecas').value; const qtd = parseFloat(document.getElementById('qtdPeca').value); const valorInput = parseMoney(document.getElementById('valorPeca').value); if(!nome || !qtd) return; if(!state.pecasCarrinho) state.pecasCarrinho = []; state.pecasCarrinho.push({ nome, qtd, valor: valorInput }); renderCarrinho(); };
+        window.removerPeca = (idx) => { state.pecasCarrinho.splice(idx, 1); renderCarrinho(); };
+        window.switchTab = (tabId) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById(tabId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-brand-500', 'text-slate-400')); if(tabId === 'calc') document.getElementById('nav-calc').querySelector('div').classList.add('border-brand-500'); else { document.getElementById(`nav-${tabId}`).classList.replace('text-slate-400', 'text-brand-500'); document.getElementById('nav-calc').querySelector('div').classList.remove('border-brand-500'); } if(tabId === 'calc') { if(!document.getElementById('cliCidade').value && state.config.cidade) { document.getElementById('cliCidade').value = state.config.cidade; state.orcamento.cliCidade = state.config.cidade; } } };
+        window.renderPaymentOptions = () => { document.getElementById('paymentOptions').innerHTML = formasPagamento.map(p => `<label class="check-btn flex items-center gap-2 cursor-pointer bg-slate-900 p-2 rounded border border-slate-700 hover:bg-slate-800 transition select-none"><input type="checkbox" name="pgto" value="${p}" class="hidden" checked><div class="w-5 h-5 border border-slate-500 rounded flex items-center justify-center"><svg class="hidden w-3 h-3 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-xs text-white font-bold">${p}</span></label>`).join(''); };
+        window.processarLogo = (input) => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const cvs = document.createElement('canvas'); const ctx = cvs.getContext('2d'); let w=img.width, h=img.height; if(w>400){ h*=400/w; w=400; } cvs.width=w; cvs.height=h; ctx.drawImage(img,0,0,w,h); state.config.logo = cvs.toDataURL('image/jpeg', 0.8); document.getElementById('imgPreview').src = state.config.logo; document.getElementById('imgPreview').classList.remove('hidden'); document.getElementById('logoPlaceholder').classList.add('hidden'); document.getElementById('btnRemoveLogo').classList.remove('hidden'); salvarTudo(); }; img.src = e.target.result; }; reader.readAsDataURL(file); };
+        window.removerLogo = () => { state.config.logo = ''; document.getElementById('imgPreview').classList.add('hidden'); document.getElementById('logoPlaceholder').classList.remove('hidden'); document.getElementById('btnRemoveLogo').classList.add('hidden'); salvarTudo(); };
+        window.addTool = () => { const nome = document.getElementById('toolNome').value; const valor = parseMoney(document.getElementById('toolValor').value); const vida = parseFloat(document.getElementById('toolVida').value) || 0; if(!nome || !valor) return; if(!state.ferramentas) state.ferramentas = []; state.ferramentas.push({ nome, valor, vida }); document.getElementById('toolNome').value = ''; document.getElementById('toolValor').value = ''; document.getElementById('toolVida').value = ''; renderFerramentas(); calcular(); };
+        window.removeTool = (idx) => { if(confirm('Excluir?')) { state.ferramentas.splice(idx, 1); renderFerramentas(); calcular(); } };
+        window.renderFerramentas = () => { const lista = document.getElementById('listaFerramentas'); lista.innerHTML = ''; let totalInvest = 0, totalDeprec = 0; if(!state.ferramentas) state.ferramentas = []; state.ferramentas.forEach((f, i) => { totalInvest += f.valor; const dep = f.vida > 0 ? f.valor / f.vida : 0; totalDeprec += dep; const div = document.createElement('div'); div.className = "flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-700 text-sm"; div.innerHTML = `<div><div class="font-bold text-white">${f.nome}</div><div class="text-[10px] text-slate-400">R$ ${formatMoney(f.valor)} (${f.vida}m)</div></div><div class="flex items-center gap-2"><span class="text-xs text-brand-400 font-bold">R$ ${dep.toFixed(2)}/mês</span><button onclick="removeTool(${i})" class="text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; lista.appendChild(div); }); document.getElementById('totalInvestido').innerText = formatMoney(totalInvest); document.getElementById('totalDepreciacao').innerText = formatMoney(totalDeprec); document.getElementById('depreciacaoAuto').value = formatMoney(totalDeprec); lucide.createIcons(); };
+        
+        window.gerarReciboAvulsoPDF = (nomeInput, valorInput, servicoInput) => { 
+            const pagador = nomeInput || document.getElementById('recPagador').value; const valorStr = valorInput ? formatMoneyStr(valorInput) : document.getElementById('recValor').value; const valor = valorInput || parseMoney(valorStr); const servico = servicoInput || document.getElementById('recServico').value; 
+            if(!pagador || !valor) return alert("Preencha Cliente e Valor."); const { jsPDF } = window.jspdf; const doc = new jsPDF(); const colBrand = [16, 185, 129]; 
+            doc.setFillColor(...colBrand); doc.rect(0, 0, 210, 40, 'F'); doc.setTextColor(255); doc.setFontSize(22); doc.setFont("helvetica", "bold"); doc.text("RECIBO DE PAGAMENTO", 105, 25, {align:'center'}); doc.setTextColor(30); doc.setFontSize(14); doc.setFont("helvetica", "normal"); let y = 60; 
+            const texto = `Recebi de ${pagador.toUpperCase()} a importância de ${formatMoney(valor)}, referente a ${servico || 'serviços prestados de montagem'}.`; const splitTexto = doc.splitTextToSize(texto, 170); doc.text(splitTexto, 20, y); y += (splitTexto.length * 7) + 10; doc.text("Dou plena e geral quitação.", 20, y); y += 30; doc.setFontSize(12); doc.text(`${state.config.cidade || 'Local'}, ${new Date().toLocaleDateString('pt-BR')}`, 190, y, {align: 'right'}); y += 40; doc.line(60, y, 150, y); doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text(state.config.nome || "Prestador de Serviço", 105, y+6, {align:'center'}); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text(state.config.cnpj || "", 105, y+11, {align:'center'}); 
+            doc.save(`Recibo_${pagador.replace(/\s+/g, '_')}.pdf`); fecharModal('modalRecibo'); 
+        };
+
+        window.modalReciboAvulso = () => { document.getElementById('recPagador').value = ''; document.getElementById('recValor').value = ''; document.getElementById('recServico').value = ''; document.getElementById('modalRecibo').classList.remove('hidden'); };
+        window.gerarReciboHistorico = (id) => { const item = state.historico.find(h => h.id === id); if(!item) return; gerarReciboAvulsoPDF(item.cliente, item.valor, "Orçamento " + item.data); };
+        window.abrirWhatsCliente = (tel) => { if(!tel) return alert("Cliente sem telefone!"); const nums = tel.replace(/\D/g, ''); window.open(`https://wa.me/55${nums}`, '_blank'); };
+        window.togglePrivacidade = () => { state.config.privacidade = !state.config.privacidade; renderPrivacidade(); salvarTudo(); };
+        window.renderPrivacidade = () => { const badge = document.getElementById('valorHoraBadge'); const icon = document.getElementById('eyeIcon'); const val = state.config.valorHora || 0; if (state.config.privacidade) { badge.innerText = 'R$ --,--'; badge.classList.add('blur-sm'); icon.setAttribute('data-lucide', 'eye-off'); } else { badge.innerText = formatMoney(val) + '/h'; badge.classList.remove('blur-sm'); icon.setAttribute('data-lucide', 'eye'); } lucide.createIcons(); };
+
+        window.agendarHistorico = (id) => { const item = state.historico.find(h => h.id === id); if(!item) return; agendarGoogle(item); };
+        window.agendarGoogle = (historicoItem = null) => {
+            try {
+                let nomeCli, dataRaw, totalVal, listaItensStr, cidade;
+                if(historicoItem) { nomeCli = historicoItem.cliente; if(historicoItem.detalhes && historicoItem.detalhes.orcamento && historicoItem.detalhes.orcamento.cliData) { dataRaw = historicoItem.detalhes.orcamento.cliData; } else { const parts = historicoItem.data.split('/'); dataRaw = `${parts[2]}-${parts[1]}-${parts[0]}`; } totalVal = historicoItem.valor; cidade = (historicoItem.detalhes.orcamento ? historicoItem.detalhes.orcamento.cliCidade : '') || ''; const itens = historicoItem.detalhes.carrinho || []; listaItensStr = itens.map(i => `${i.qtd}x ${i.nome}`).join(', '); } else { const calc = renderCarrinho(); if (calc.totalFinal === 0) return alert("Orçamento vazio!"); nomeCli = document.getElementById('cliNome').value || "Cliente"; dataRaw = document.getElementById('cliData').value; totalVal = calc.totalFinal; cidade = document.getElementById('cliCidade').value || ""; listaItensStr = state.carrinho.map(i => `${i.qtd}x ${i.nome}`).join(', '); }
+                if (!dataRaw) return alert("Defina uma data para o serviço!"); const horaInicio = "09:00"; const dataInicio = new Date(`${dataRaw}T${horaInicio}:00`); let duracaoHoras = 2; if(historicoItem && historicoItem.detalhes.carrinho) { duracaoHoras = historicoItem.detalhes.carrinho.reduce((acc, i) => acc + (i.tempo * i.qtd), 0) || 2; } else if (!historicoItem && state.carrinho) { duracaoHoras = state.carrinho.reduce((acc, i) => acc + (i.tempo * i.qtd), 0) || 2; }
+                const dataFim = new Date(dataInicio.getTime() + (duracaoHoras * 60 * 60 * 1000)); const layoutDataIni = dataInicio.toISOString().replace(/-|:|\.\d\d\d/g, ""); const layoutDataFim = dataFim.toISOString().replace(/-|:|\.\d\d\d/g, ""); const titulo = encodeURIComponent(`Montagem: ${nomeCli}`); const detalhes = encodeURIComponent(`Serviço de Montagem.\nCliente: ${nomeCli}\nItens: ${listaItensStr}\nValor Total: ${formatMoney(totalVal)}\n\nGerado pelo Sistema Montador Lucrativo.`); const local = encodeURIComponent(cidade); const link = `https://www.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}&location=${local}&dates=${layoutDataIni}/${layoutDataFim}`; window.open(link, '_blank');
+            } catch (e) { console.error(e); alert("Erro ao gerar link da agenda."); }
+        };
+    </script>
+</body>
+</html>
