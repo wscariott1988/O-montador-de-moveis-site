@@ -1,0 +1,421 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  AVALIACOES,
+  CITIES,
+  GOOGLE_REVIEWS_URL,
+  PORTFOLIO,
+  SITE,
+  SOBRE,
+  whatsappUrl,
+} from "../data/site";
+
+const wa = whatsappUrl();
+const canonical = "https://www.omontadordemoveis.com/montador";
+const heroImage = PORTFOLIO[0];
+const serviceCities = CITIES.slice(0, 5);
+const reviews = AVALIACOES.slice(0, 3);
+const portfolioLabels = ["Cozinha", "Painel e rack", "Cômoda"];
+
+const furnitureTypes = [
+  "Guarda-roupas",
+  "Cômodas",
+  "Racks e painéis",
+  "Camas",
+  "Armários",
+  "Mesas e escrivaninhas",
+  "Cozinhas",
+  "Estantes e multiusos",
+];
+
+const differentials = [
+  {
+    title: "Montagem correta",
+    text: "Montagem seguindo a estrutura do móvel, com atenção à fixação e ao funcionamento.",
+  },
+  {
+    title: "Alinhamento e regulagens",
+    text: "Portas, gavetas, dobradiças e componentes ajustados ao finalizar.",
+  },
+  {
+    title: "Pontualidade e profissionalismo",
+    text: "Horário combinado, ferramentas adequadas e atendimento profissional.",
+  },
+  {
+    title: "Cuidado com o móvel e o ambiente",
+    text: "Serviço organizado e atenção para evitar danos durante a montagem.",
+  },
+];
+---
+
+<BaseLayout
+  title="Montador de Móveis em Novo Hamburgo e Vale dos Sinos | Willian"
+  description="Montagem de móveis em Novo Hamburgo, São Leopoldo, Campo Bom, Estância Velha e Sapucaia do Sul. Orçamento gratuito pelo WhatsApp."
+  canonical={canonical}
+  preloadImage={heroImage.src}
+>
+  <div class="montador-page min-h-screen bg-background">
+    <header class="sticky top-0 z-40 border-b border-border-subtle bg-surface/95 backdrop-blur-md">
+      <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-3 px-4 md:h-20 md:px-6">
+        <div class="min-w-0 text-base font-extrabold text-primary md:text-xl">
+          <span>Willian</span>
+          <span class="hidden text-amber sm:inline"> | O Montador de Móveis</span>
+        </div>
+        <a
+          href={wa}
+          data-whatsapp-cta="montador_header"
+          class="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-5 sm:text-sm"
+        >
+          <span class="material-symbols-outlined text-base" aria-hidden="true">chat</span>
+          Pedir Orçamento
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="border-b border-border-subtle bg-surface py-12 md:py-20">
+        <div class="mx-auto grid max-w-[1200px] items-center gap-0 px-4 md:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
+          <div class="contents lg:block lg:max-w-2xl">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Montador de móveis profissional</p>
+            <h1 class="mt-4 text-4xl font-extrabold leading-tight text-ink md:text-5xl md:leading-[1.08]">
+              Montador de Móveis em Novo Hamburgo e Vale dos Sinos
+            </h1>
+            <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted md:text-xl">
+              Montagem de guarda-roupas, cômodas, racks, camas, armários e outros móveis, com atendimento profissional e orçamento rápido pelo WhatsApp.
+            </p>
+
+            <div class="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <a
+                href={wa}
+                data-whatsapp-cta="montador_hero"
+                class="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-lg bg-primary px-7 text-base font-bold text-white shadow-[0_6px_20px_rgba(30,64,175,0.22)] transition-colors hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+                Pedir Orçamento Grátis
+              </a>
+              <span class="text-sm font-semibold text-muted-dark">Orçamento grátis pelo WhatsApp</span>
+            </div>
+
+            <ul class="order-6 mt-6 grid grid-cols-3 divide-x divide-border-subtle border-t border-border-subtle pt-5 text-xs sm:mt-8 sm:gap-4 sm:divide-x-0 sm:pt-6 sm:text-sm lg:order-none">
+              <li class="px-3 text-center first:pl-0 last:pr-0 sm:px-0 sm:text-left">
+                <strong class="block text-sm font-extrabold text-primary sm:text-base">Desde 2020</strong>
+                <span class="text-xs leading-snug text-muted sm:text-sm">Experiência profissional</span>
+              </li>
+              <li class="px-3 text-center first:pl-0 last:pr-0 sm:px-0 sm:text-left">
+                <strong class="block text-sm font-extrabold text-primary sm:text-base">+5.000</strong>
+                <span class="text-xs leading-snug text-muted sm:text-sm">Móveis montados</span>
+              </li>
+              <li class="px-3 text-center first:pl-0 last:pr-0 sm:px-0 sm:text-left">
+                <strong class="block text-sm font-extrabold text-primary sm:text-base">5 estrelas</strong>
+                <span class="text-xs leading-snug text-muted sm:text-sm">Avaliações no Google</span>
+              </li>
+            </ul>
+          </div>
+
+          <figure class="order-5 relative mx-auto mt-6 w-full max-w-xl lg:order-none lg:mt-0 lg:justify-self-end">
+            <div class="aspect-[4/3] overflow-hidden rounded-3xl border border-border-subtle bg-surface-soft shadow-[0_12px_30px_rgba(17,24,39,0.12)] lg:aspect-[4/5]">
+              <img
+                src={heroImage.src}
+                width={heroImage.width}
+                height={heroImage.height}
+                alt="Cozinha montada por Willian, montador de móveis em Novo Hamburgo."
+                class="h-full w-full object-cover object-[center_52%] lg:object-center"
+                fetchpriority="high"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <figcaption class="absolute bottom-4 left-4 rounded-lg bg-surface/95 px-3 py-2 text-xs font-bold text-ink shadow-sm">
+              Montagem de cozinha
+            </figcaption>
+          </figure>
+
+        </div>
+      </section>
+
+      <section id="tipos-de-moveis" class="scroll-mt-20 py-16 md:py-24">
+        <div class="mx-auto max-w-[1200px] px-4 md:px-6">
+          <div class="max-w-2xl">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Montagem de móveis</p>
+            <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Comprou o móvel? Eu monto para você.</h2>
+            <p class="mt-4 text-lg leading-relaxed text-muted">
+              Montagem de móveis novos ou usados, comprados em lojas físicas, pela internet ou que precisam ser desmontados e montados novamente.
+            </p>
+          </div>
+
+          <ul class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {furnitureTypes.map((type) => (
+              <li class="flex min-h-16 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm font-bold text-muted-dark shadow-sm">
+                <span class="h-2 w-2 shrink-0 rounded-full bg-amber" aria-hidden="true"></span>
+                {type}
+              </li>
+            ))}
+          </ul>
+
+          <div class="mt-8 flex flex-col items-start gap-4 border-t border-border-subtle pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p class="font-semibold text-muted-dark">Seu móvel não está na lista? Consulte pelo WhatsApp.</p>
+            <a
+              href={wa}
+              data-whatsapp-cta="montador_services"
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-amber px-6 font-bold text-ink transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+              Consultar Montagem no WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-surface-soft py-16 md:py-24">
+        <div class="mx-auto max-w-[1200px] px-4 md:px-6">
+          <div class="max-w-2xl">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Serviço profissional</p>
+            <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Montagem bem feita do início ao fim</h2>
+          </div>
+
+          <div class="mt-10 grid gap-4 sm:grid-cols-2">
+            {differentials.map((differential, index) => (
+              <article class="rounded-2xl border border-border-subtle bg-surface p-6 md:p-8">
+                <span class="text-sm font-extrabold tracking-widest text-amber">0{index + 1}</span>
+                <h3 class="mt-5 text-xl font-bold text-ink">{differential.title}</h3>
+                <p class="mt-2 leading-relaxed text-muted">{differential.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="trabalhos-realizados" class="scroll-mt-20 py-16 md:py-24">
+        <div class="mx-auto max-w-[1200px] px-4 md:px-6">
+          <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div class="max-w-2xl">
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Trabalhos realizados</p>
+              <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Alguns móveis que já montei</h2>
+              <p class="mt-4 text-lg leading-relaxed text-muted">Montagens reais realizadas para clientes da região.</p>
+            </div>
+            <a
+              href={wa}
+              data-whatsapp-cta="montador_portfolio"
+              class="inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-lg border-2 border-primary px-6 font-bold text-primary transition-colors hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:self-auto"
+            >
+              Pedir Orçamento no WhatsApp
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+            </a>
+          </div>
+
+          <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {PORTFOLIO.map((item, index) => (
+              <figure class="overflow-hidden rounded-2xl border border-border-subtle bg-surface shadow-sm">
+                <div class="aspect-[4/3] overflow-hidden bg-surface-soft">
+                  <img
+                    src={item.src}
+                    width={item.width}
+                    height={item.height}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                <figcaption class="px-5 py-4 text-sm font-bold text-ink">{portfolioLabels[index]}</figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <p class="mt-8 text-center text-lg font-semibold text-muted-dark">Precisa montar um móvel parecido?</p>
+          <div class="mt-4 text-center">
+            <a
+              href={wa}
+              data-whatsapp-cta="montador_portfolio"
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-6 font-bold text-white transition-colors hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              Pedir Orçamento no WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-surface-soft py-16 md:py-24">
+        <div class="mx-auto grid max-w-[1200px] items-center gap-10 px-4 md:px-6 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+          <figure class="order-2 mx-auto w-full max-w-md md:order-1">
+            <img
+              src={SOBRE.foto}
+              alt={SOBRE.fotoAlt}
+              width={SOBRE.fotoWidth}
+              height={SOBRE.fotoHeight}
+              loading="lazy"
+              decoding="async"
+              class="aspect-[4/5] w-full rounded-3xl object-cover shadow-[0_12px_30px_rgba(17,24,39,0.12)]"
+            />
+          </figure>
+          <div class="order-1 md:order-2">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Quem vai realizar o serviço</p>
+            <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Montador profissional desde 2020</h2>
+            <p class="mt-5 text-lg leading-relaxed text-muted">
+              Sou Willian e trabalho profissionalmente com montagem de móveis desde 2020. De lá para cá, já são mais de 5.000 móveis montados.
+            </p>
+            <p class="mt-4 text-lg leading-relaxed text-muted">
+              Meu jeito de trabalhar é simples: fazer o básico muito bem feito — montagem correta, alinhamento e regulagens, pontualidade, ferramentas adequadas e atendimento profissional.
+            </p>
+
+            <dl class="mt-8 grid grid-cols-3 gap-3 border-t border-border-subtle pt-6">
+              <div>
+                <dd class="text-xl font-extrabold text-primary">Desde 2020</dd>
+                <dt class="mt-1 text-xs leading-relaxed text-muted">Experiência profissional</dt>
+              </div>
+              <div>
+                <dd class="text-xl font-extrabold text-primary">+5.000</dd>
+                <dt class="mt-1 text-xs leading-relaxed text-muted">Móveis montados</dt>
+              </div>
+              <div>
+                <dd class="text-xl font-extrabold text-primary">Vale dos Sinos</dd>
+                <dt class="mt-1 text-xs leading-relaxed text-muted">Região de atendimento</dt>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24">
+        <div class="mx-auto max-w-[1200px] px-4 md:px-6">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Avaliações reais</p>
+            <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Quem já contratou recomenda</h2>
+            <p class="mt-4 text-lg leading-relaxed text-muted">
+              Veja o que clientes que já contrataram meu serviço dizem sobre atendimento, pontualidade e qualidade da montagem.
+            </p>
+          </div>
+
+          <div class="mt-10 grid gap-5 lg:grid-cols-3">
+            {reviews.map((review) => (
+              <article class="flex flex-col rounded-2xl border border-border-subtle bg-surface p-6 shadow-sm md:p-7">
+                <div class="text-amber tracking-tight" role="img" aria-label="5 estrelas">★★★★★</div>
+                <p class="mt-4 flex-1 leading-relaxed text-muted">"{review.texto}"</p>
+                <div class="mt-6 border-t border-border-subtle pt-5">
+                  <p class="text-sm font-extrabold uppercase tracking-wide text-ink">{review.nome}</p>
+                  <p class="mt-1 text-xs text-faint">Avaliação no Google</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="mt-8 text-center">
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              Ver mais avaliações no Google
+              <span class="material-symbols-outlined text-base" aria-hidden="true">open_in_new</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-surface-soft py-16 md:py-24">
+        <div class="mx-auto max-w-[1200px] px-4 text-center md:px-6">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Atendimento na região</p>
+          <h2 class="mt-2 text-3xl font-extrabold text-ink md:text-4xl">Montador de móveis em Novo Hamburgo e cidades próximas</h2>
+          <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-muted">
+            Atendo serviços de montagem de móveis em Novo Hamburgo, São Leopoldo, Campo Bom, Estância Velha e Sapucaia do Sul.
+          </p>
+
+          <ul class="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
+            {serviceCities.map((city) => (
+              <li class="rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm font-bold text-muted-dark shadow-sm">{city}</li>
+            ))}
+          </ul>
+
+          <p class="mt-8 font-semibold text-muted-dark">Está em uma dessas cidades? Consulte a disponibilidade pelo WhatsApp.</p>
+          <div class="mt-5">
+            <a
+              href={wa}
+              data-whatsapp-cta="montador_region"
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-7 font-bold text-white shadow-sm transition-colors hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+              Consultar Disponibilidade
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-4 py-16 md:px-6 md:py-24">
+        <div class="mx-auto max-w-[1000px] rounded-3xl bg-primary px-6 py-12 text-center md:px-16 md:py-16">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber">Orçamento grátis</p>
+          <h2 class="mt-3 text-3xl font-extrabold text-white md:text-4xl">Precisa montar seus móveis?</h2>
+          <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-primary-fixed">Chame pelo WhatsApp e consulte valor e disponibilidade para o seu serviço.</p>
+          <a
+            href={wa}
+            data-whatsapp-cta="montador_final"
+            class="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-lg bg-amber px-8 text-base font-extrabold text-ink shadow-sm transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+            Pedir Orçamento pelo WhatsApp
+          </a>
+          <p class="mt-5 text-sm text-white/85">Sem compromisso · Orçamento gratuito</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-border-subtle bg-surface py-8">
+      <div class="mx-auto flex max-w-[1200px] flex-col gap-2 px-4 text-sm md:flex-row md:items-center md:justify-between md:px-6">
+        <p class="font-extrabold text-primary">{SITE.brand}</p>
+        <p class="text-muted">Montagem de móveis em Novo Hamburgo e Vale dos Sinos</p>
+      </div>
+    </footer>
+
+    <div
+      id="montador-sticky-cta"
+      aria-hidden="false"
+      class="fixed inset-x-0 bottom-0 z-50 px-4 pb-2 pt-2 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none md:hidden"
+      style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom))"
+    >
+      <a
+        href={wa}
+        data-whatsapp-cta="montador_sticky"
+        class="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 font-bold text-white shadow-[0_-4px_18px_rgba(17,24,39,0.18)] transition-colors hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+        Pedir Orçamento
+      </a>
+    </div>
+
+    <script is:inline>
+      const heroCta = document.querySelector('[data-whatsapp-cta="montador_hero"]');
+      const stickyCta = document.getElementById("montador-sticky-cta");
+
+      if (stickyCta) {
+        const setStickyVisibility = (visible) => {
+          stickyCta.classList.toggle("opacity-0", !visible);
+          stickyCta.classList.toggle("translate-y-full", !visible);
+          stickyCta.classList.toggle("pointer-events-none", !visible);
+          stickyCta.setAttribute("aria-hidden", String(!visible));
+        };
+
+        const heroCtaIsVisible = () => {
+          if (!heroCta) return false;
+          const rect = heroCta.getBoundingClientRect();
+          return rect.bottom > 0 && rect.top < window.innerHeight;
+        };
+
+        setStickyVisibility(!heroCtaIsVisible());
+
+        if (heroCta && "IntersectionObserver" in window) {
+          const observer = new IntersectionObserver(
+            ([entry]) => setStickyVisibility(!entry.isIntersecting),
+            { threshold: 0.1 },
+          );
+          observer.observe(heroCta);
+        } else if (heroCta) {
+          const updateStickyVisibility = () => setStickyVisibility(!heroCtaIsVisible());
+          window.addEventListener("scroll", updateStickyVisibility, { passive: true });
+          window.addEventListener("resize", updateStickyVisibility);
+        } else {
+          setStickyVisibility(true);
+        }
+      }
+    </script>
+  </div>
+</BaseLayout>

@@ -15,6 +15,7 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  preloadImage?: string;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   description = "Montagem de móveis em Novo Hamburgo e Vale dos Sinos. Willian trabalha desde 2020 e já montou mais de 5.000 móveis. Orçamento pelo WhatsApp.",
   canonical = siteUrl,
   ogImage = absoluteUrl("/images/og/og-image.jpg"),
+  preloadImage = "/images/fotos/willian-foto.webp",
 } = Astro.props;
 
 const robots = isStaging ? "noindex, nofollow" : "index, follow";
@@ -139,6 +141,7 @@ const jsonLd = {
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
+    <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
