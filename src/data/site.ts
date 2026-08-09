@@ -97,7 +97,7 @@ export const PORTFOLIO = [
   {
     src: "/images/portfolio/montagem-cozinha.webp",
     width: 1848,
-    height: 2614,
+    height: 2393,
     alt: "Armários de cozinha brancos e balcão com pia montados. Serviço de montagem de móveis convencionais.",
   },
   {
