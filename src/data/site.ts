@@ -1,3 +1,11 @@
+import comodaEstanciaVelha from "../assets/portfolio/comoda-estancia-velha.webp";
+import montagemCozinha from "../assets/portfolio/montagem-cozinha.webp";
+import painelTv from "../assets/portfolio/painel-tv.webp";
+import quemSouEu from "../assets/fotos/Quem-sou-eu.webp";
+import willianFoto from "../assets/fotos/willian-foto.webp";
+
+export const HERO_FOTO = willianFoto;
+
 // Ambientes:
 // PRODUÇÃO  -> https://omontadordemoveis.com/  (index, follow, canonical oficial, sitemap oficial)
 // STAGING   -> preview deployment (noindex, nofollow; canonical continua oficial)
@@ -95,21 +103,15 @@ export const SERVICES = [
 
 export const PORTFOLIO = [
   {
-    src: "/images/portfolio/montagem-cozinha.webp",
-    width: 1848,
-    height: 2393,
+    img: montagemCozinha,
     alt: "Armários de cozinha brancos e balcão com pia montados. Serviço de montagem de móveis convencionais.",
   },
   {
-    src: "/images/portfolio/painel-tv.webp",
-    width: 2464,
-    height: 2464,
+    img: painelTv,
     alt: "Painel de TV planejado com rack suspenso preto e detalhes em madeira, instalado profissionalmente.",
   },
   {
-    src: "/images/portfolio/comoda-estancia-velha.webp",
-    width: 1440,
-    height: 1440,
+    img: comodaEstanciaVelha,
     alt: "Cômoda branca para quarto de bebê montada com precisão em Estância Velha.",
   },
 ];
@@ -138,9 +140,7 @@ export const AVALIACOES = [
 ];
 
 export const SOBRE = {
-  foto: "/images/fotos/Quem-sou-eu.webp",
-  fotoWidth: 900,
-  fotoHeight: 1125,
+  img: quemSouEu,
   fotoAlt: "Willian, montador de móveis, em uma foto pessoal apresentando seu trabalho em Novo Hamburgo.",
   paragrafos: [
     "Sou Willian e trabalho profissionalmente com montagem de móveis desde 2020. Comecei nessa atividade durante a pandemia, quando as escolas fecharam e precisei deixar temporariamente meu trabalho como professor. O que começou por necessidade acabou se tornando minha profissão.",

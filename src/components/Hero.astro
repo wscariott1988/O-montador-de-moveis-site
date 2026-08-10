@@ -1,5 +1,6 @@
 ---
-import { whatsappUrl } from "../data/site";
+import { Image } from "astro:assets";
+import { HERO_FOTO, whatsappUrl } from "../data/site";
 const wa = whatsappUrl();
 ---
 
@@ -59,15 +60,18 @@ const wa = whatsappUrl();
       </div>
 
       <div class="relative">
-        <img
-          src="/images/fotos/willian-foto.webp"
-          width="1080"
-          height="664"
-          alt="Foto do montador de móveis Willian, especialista em montagem de móveis em Novo Hamburgo."
-          class="w-full h-auto aspect-square object-cover rounded-2xl shadow-xl"
-          fetchpriority="high"
-          decoding="async"
-        />
+        <div class="aspect-square overflow-hidden rounded-2xl shadow-xl">
+          <Image
+            src={HERO_FOTO}
+            alt="Foto do montador de móveis Willian, especialista em montagem de móveis em Novo Hamburgo."
+            sizes="(min-width:768px) 50vw, 92vw"
+            widths={[480, 640, 800]}
+            class="h-full w-full object-cover"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
         <div class="absolute bottom-4 left-4 right-4 bg-surface/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-border-subtle flex items-center gap-3">
           <div class="bg-primary-soft p-3 rounded-full text-primary">
             <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1" aria-hidden="true">verified</span>

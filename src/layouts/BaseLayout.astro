@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import manropeLatinWoff2 from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
 import {
   CITIES,
   GOOGLE_REVIEWS_URL,
@@ -28,20 +29,35 @@ const {
 
 const robots = isStaging ? "noindex, nofollow" : "index, follow";
 
-const gtagInit = `
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', '${SITE.ga4}');
-`;
-
-const gtmInit = `
-  (function (w, d, s, l, i) {
-    w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-    var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-    j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-    f.parentNode.insertBefore(j, f);
-  })(window, document, 'script', 'dataLayer', '${SITE.gtm}');
+const analyticsInit = `
+  (function () {
+    var started = false;
+    function start() {
+      if (started) return;
+      started = true;
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', '${SITE.ga4}');
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', '${SITE.gtm}');
+    }
+    function onReady() {
+      window.setTimeout(start, 12000);
+    }
+    if (document.readyState === 'complete') {
+      onReady();
+    } else {
+      window.addEventListener('load', onReady);
+    }
+    document.addEventListener('click', start, { once: true, passive: true });
+    document.addEventListener('scroll', start, { once: true, passive: true });
+    document.addEventListener('touchstart', start, { once: true, passive: true });
+  })();
 `;
 
 // Fallback complementar APENAS para o alias *.vercel.app de um build de produção.
@@ -137,6 +153,7 @@ const jsonLd = {
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={manropeLatinWoff2} crossorigin />
     <link
       rel="preload"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -154,8 +171,7 @@ const jsonLd = {
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
-    <script is:inline set:html={gtagInit}></script>
-    <script is:inline set:html={gtmInit}></script>
+    <script is:inline set:html={analyticsInit}></script>
     <script is:inline set:html={stagingFallback}></script>
     <script is:inline>
       document.addEventListener('click', function (e) {

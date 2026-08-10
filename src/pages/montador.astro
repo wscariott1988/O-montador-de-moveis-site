@@ -1,4 +1,5 @@
 ---
+import { Image, getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
   AVALIACOES,
@@ -8,10 +9,14 @@ import {
   SOBRE,
   whatsappUrl,
 } from "../data/site";
+import IMG_20210616 from "../assets/portfolio/IMG_20210616_190327.webp";
+import IMG_20240116 from "../assets/portfolio/IMG_20240116_092509.webp";
+import IMG_20240227 from "../assets/portfolio/IMG_20240227_161459.webp";
 
 const wa = whatsappUrl("Olá, encontrei seu contato no Google e gostaria de um orçamento.");
 const canonical = "https://www.omontadordemoveis.com/montador";
 const heroImage = PORTFOLIO[0];
+const heroImagePreload = await getImage({ src: PORTFOLIO[0].img, width: 768 });
 const serviceCities = CITIES.slice(0, 5);
 const reviews = AVALIACOES.slice(0, 3);
 
@@ -20,23 +25,17 @@ const montadorPortfolio = [
   { ...PORTFOLIO[1], label: "Painel e rack" },
   { ...PORTFOLIO[2], label: "Cômoda" },
   {
-    src: "/images/portfolio/IMG_20240227_161459.webp",
-    width: 1683,
-    height: 2104,
+    img: IMG_20240227,
     alt: "Foto de trabalho de montagem de móveis realizada por Willian para clientes do Vale dos Sinos.",
     label: "Montagem de móveis",
   },
   {
-    src: "/images/portfolio/IMG_20240116_092509.webp",
-    width: 2278,
-    height: 2847,
+    img: IMG_20240116,
     alt: "Foto de trabalho de montagem de móveis realizada por Willian para clientes do Vale dos Sinos.",
     label: "Montagem de móveis",
   },
   {
-    src: "/images/portfolio/IMG_20210616_190327.webp",
-    width: 3000,
-    height: 3445,
+    img: IMG_20210616,
     alt: "Foto de trabalho de montagem de móveis realizada por Willian para clientes do Vale dos Sinos.",
     label: "Montagem de móveis",
   },
@@ -77,7 +76,7 @@ const differentials = [
   title="Montador de Móveis em Novo Hamburgo e Vale dos Sinos | Willian"
   description="Montagem de móveis em Novo Hamburgo, São Leopoldo, Campo Bom, Estância Velha e Sapucaia do Sul. Orçamento gratuito pelo WhatsApp."
   canonical={canonical}
-  preloadImage={heroImage.src}
+  preloadImage={heroImagePreload.src}
 >
   <div class="montador-page min-h-screen bg-background">
     <header class="sticky top-0 z-40 border-b border-border-subtle bg-surface/95 backdrop-blur-md">
@@ -139,11 +138,11 @@ const differentials = [
 
           <figure class="order-5 relative mx-auto mt-6 w-full max-w-xl lg:order-none lg:mt-0 lg:justify-self-end">
             <div class="aspect-[4/3] overflow-hidden rounded-3xl border border-border-subtle bg-surface-soft shadow-[0_12px_30px_rgba(17,24,39,0.12)] lg:aspect-[4/5]">
-              <img
-                src={heroImage.src}
-                width={heroImage.width}
-                height={heroImage.height}
+              <Image
+                src={heroImage.img}
                 alt="Cozinha montada por Willian, montador de móveis em Novo Hamburgo."
+                sizes="(min-width:1024px) 520px, 92vw"
+                widths={[480, 640, 768, 1024]}
                 class="h-full w-full object-cover object-[center_52%] lg:object-center"
                 fetchpriority="high"
                 loading="eager"
@@ -232,11 +231,11 @@ const differentials = [
             {montadorPortfolio.map((item) => (
               <figure class="overflow-hidden rounded-2xl border border-border-subtle bg-surface shadow-sm">
                 <div class="aspect-[4/3] overflow-hidden bg-surface-soft">
-                  <img
-                    src={item.src}
-                    width={item.width}
-                    height={item.height}
+                  <Image
+                    src={item.img}
                     alt={item.alt}
+                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                    widths={[480, 720, 960]}
                     loading="lazy"
                     decoding="async"
                     class="h-full w-full object-cover"
@@ -263,11 +262,11 @@ const differentials = [
       <section class="bg-surface-soft py-16 md:py-24">
         <div class="mx-auto grid max-w-[1200px] items-center gap-10 px-4 md:px-6 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
           <figure class="order-2 mx-auto w-full max-w-md md:order-1">
-            <img
-              src={SOBRE.foto}
+            <Image
+              src={SOBRE.img}
               alt={SOBRE.fotoAlt}
-              width={SOBRE.fotoWidth}
-              height={SOBRE.fotoHeight}
+              sizes="(min-width:768px) 45vw, 100vw"
+              widths={[480, 720, 960]}
               loading="lazy"
               decoding="async"
               class="aspect-[4/5] w-full rounded-3xl object-cover shadow-[0_12px_30px_rgba(17,24,39,0.12)]"
@@ -407,13 +406,15 @@ const differentials = [
           stickyCta.setAttribute("aria-hidden", String(!visible));
         };
 
+        // Estado inicial sem leitura síncrona de layout (evita reflow forçado no parse).
+        // O IntersectionObserver define a visibilidade de forma assíncrona no primeiro frame.
+        setStickyVisibility(false);
+
         const heroCtaIsVisible = () => {
           if (!heroCta) return false;
           const rect = heroCta.getBoundingClientRect();
           return rect.bottom > 0 && rect.top < window.innerHeight;
         };
-
-        setStickyVisibility(!heroCtaIsVisible());
 
         if (heroCta && "IntersectionObserver" in window) {
           const observer = new IntersectionObserver(
@@ -425,6 +426,7 @@ const differentials = [
           const updateStickyVisibility = () => setStickyVisibility(!heroCtaIsVisible());
           window.addEventListener("scroll", updateStickyVisibility, { passive: true });
           window.addEventListener("resize", updateStickyVisibility);
+          updateStickyVisibility();
         } else {
           setStickyVisibility(true);
         }

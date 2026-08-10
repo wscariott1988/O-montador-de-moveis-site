@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
@@ -11,9 +12,12 @@ import Regioes from "../components/Regioes.astro";
 import CtaFinal from "../components/CtaFinal.astro";
 import Footer from "../components/Footer.astro";
 import StickyWhatsApp from "../components/StickyWhatsApp.astro";
+import { HERO_FOTO } from "../data/site";
+
+const heroImagePreload = await getImage({ src: HERO_FOTO, width: 640 });
 ---
 
-<BaseLayout>
+<BaseLayout preloadImage={heroImagePreload.src}>
   <Header />
   <main>
     <Hero />

@@ -43,6 +43,9 @@
   font-style: normal;
   display: inline-block;
   line-height: 1;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
   text-transform: none;
   letter-spacing: normal;
   word-wrap: normal;
