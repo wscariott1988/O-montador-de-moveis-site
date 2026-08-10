@@ -18,8 +18,6 @@ export const SITE = {
   phoneDisplay: "(51) 98016-8744",
   whatsappNumber: "5551980168744",
   region: "Novo Hamburgo e Vale dos Sinos",
-  ga4: "G-H0R3NGYK8H",
-  gtm: "GTM-WV6RLBVN",
 };
 
 const env = import.meta.env as Record<string, string | undefined>;
