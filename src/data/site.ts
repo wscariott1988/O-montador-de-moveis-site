@@ -29,6 +29,10 @@ export const siteUrl = env.PUBLIC_SITE_URL || SITE.url;
 // customizado, mas não deve ser a fonte de decisão de indexação.
 export const isStaging = env.VERCEL_ENV === "preview";
 
+// Analytics (GTM) só é carregado em produção real (VERCEL_ENV === "production").
+// Preview/staging e desenvolvimento local não enviam tráfego para o Analytics.
+export const isProduction = env.VERCEL_ENV === "production";
+
 // Proteção complementar (não decide produção): um deployment de produção pode
 // ser acessado via alias *.vercel.app. Um script de fallback por hostname injeta
 // noindex nesse caso. Isso NUNCA define se o domínio oficial indexa nem muda o

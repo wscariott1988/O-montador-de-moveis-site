@@ -7,6 +7,7 @@ import {
   SITE,
   absoluteUrl,
   googleSiteVerification,
+  isProduction,
   isStaging,
   siteUrl,
 } from "../data/site";
@@ -32,6 +33,17 @@ const {
 } = Astro.props;
 
 const robots = isStaging ? "noindex, nofollow" : "index, follow";
+
+const GTM_CONTAINER = "GTM-NVSVMFW3";
+
+// Instalação padrão e assíncrona do Google Tag Manager (somente em produção).
+const gtmHeadScript = `
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','${GTM_CONTAINER}');
+`;
 
 // Fallback complementar APENAS para o alias *.vercel.app de um build de produção.
 // Não decide a indexação do domínio oficial (isso é responsabilidade do VERCEL_ENV)
@@ -99,6 +111,7 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {isProduction && <script is:inline set:html={gtmHeadScript}></script>}
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />
@@ -133,6 +146,16 @@ const jsonLd = {
     <script is:inline set:html={stagingFallback}></script>
   </head>
   <body class="pb-20 md:pb-0">
+    {isProduction && (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${GTM_CONTAINER}`}
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"
+        ></iframe>
+      </noscript>
+    )}
     <slot />
   </body>
 </html>
